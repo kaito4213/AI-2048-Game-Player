@@ -14,22 +14,32 @@ class Board():
 
 def place_two(board):
     """
-    place two number in the board
+    place two number in the boar
     """
     N = len(board)
-    x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
-    times = 0
-    while times < 10 and board[x1][y1] != '*':
+    random_generate_2 = random.randint(0,10)
+    # generate a new number of 2 with possibily of 50%
+    if random_generate_2 < 5:
         x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
-        times += 1
-    board[x1][y1] = 2
+        times = 0
+        while times < 10 and board[x1][y1] != '*':
+            x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+            times += 1
 
-    times = 0
-    x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
-    while times < 3 and board[x1][y1] != '*':
+        if board[x1][y1] == '*':
+            board[x1][y1] = 2
+
+    random_generate_4 = random.randint(0, 10)
+    # generate a new number of 2 with possibily of 30%
+    if random_generate_4 < 3:
+        times = 0
         x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
-        times += 1
-    board[x1][y1] = 4
+        while times < 3 and board[x1][y1] != '*':
+            x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+            times += 1
+
+        if board[x1][y1] == '*':
+            board[x1][y1] = 4
 
 def run():
     board = make_board(4)
