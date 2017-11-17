@@ -45,6 +45,19 @@ def find_empty_cells(board):
     
     return emptyCells
     
+def find_max_cell(board):
+    """
+    find the maximum number in the cell
+    """
+    N = len(board)
+    best_cell = 0
+    for i in range(N):
+        for j in range(N):
+            if board[i][j] != '*' and board[i][j] > best_cell:
+                best_cell = board[i][j]
+    
+    return best_cell
+
 def check_end(board):
     """
     check if game is at the end state
