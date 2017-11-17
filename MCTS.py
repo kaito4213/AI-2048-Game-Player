@@ -27,7 +27,7 @@ def naive_random_move(board, curr_score, test_moves=100):
             move(test_board, action)
             scores[i] = add_up(test_board, action,scores[i])
             move(test_board, action)
-            MCTS_place_two(test_board)
+            simple_add_num(test_board)
 
             test_times = test_moves-1
             while test_times >= 0 and not check_end(test_board):
@@ -36,7 +36,7 @@ def naive_random_move(board, curr_score, test_moves=100):
                     move(test_board,test_action)
                     scores[i] = add_up(test_board,test_action,scores[i])
                     move(test_board,test_action)
-                    MCTS_place_two(test_board)
+                    simple_add_num(test_board)
                 test_times -= 1
 
     if max(scores) == curr_score:
@@ -44,6 +44,27 @@ def naive_random_move(board, curr_score, test_moves=100):
         return moves[random.randint(0,3)]
     else:
         return moves[scores.index(max(scores))]
+
+def simple_add_num(board):
+    """
+    simple add a number in the board
+
+    if tile has empty, find it, and then 
+    90% add 2
+    10% add 4
+
+    """
+    emptyCells = find_empty_cells(board)
+    if len(emptyCells) == 0:
+        print("no empty cells, return")
+        return
+
+    row, col = emptyCells[random.randint(0, len(emptyCells)-1)]
+    p = random.randint(0,99)
+    if p < 90:
+        board[row][col] = 2
+    else:
+        board[row][col] = 4
 
 def MCTS_place_two(board):
     """
@@ -55,10 +76,10 @@ def MCTS_place_two(board):
 
     if add two number:
         one must be 2,
-        another 80% 2
+        another 90% 2
     
     if add onw number:
-        80% 2
+        90% 2
     """
     N = len(board)
     emptyCells = find_empty_cells(board)
@@ -89,7 +110,7 @@ def MCTS_place_two(board):
         # 80% add 2, 20% add 1
         x1,y1 = emptyCells[random.randint(0,num_emptyCell-1)]
         p = random.randint(0,99)
-        if p < 80:
+        if p < 90:
             board[x1][y1] = 2
         else:
             board[x1][y1] = 4
@@ -105,7 +126,7 @@ def MCTS_place_two(board):
         # for second added number
         # 80% add 2, 20% add 4
         p = random.randint(0,99)
-        if p < 80:
+        if p < 90:
             board[x2][y2] = 2        
         else:
             board[x2][y2] = 4
@@ -142,7 +163,7 @@ def run_naive_MCTS(test_moves=100):
             curr_score = add_up(board, action,curr_score)
             move(board, action)
             clear()
-            MCTS_place_two(board)
+            simple_add_num(board)
             print_board(board)
             print(" ")
         else:

@@ -67,6 +67,29 @@ def place_two(board):
         if board[x1][y1] == '*':
             board[x1][y1] = 4
 
+
+def simple_add_num(board):
+    """
+    simple add a number in the board
+
+    if tile has empty, find it, and then 
+    90% add 2
+    10% add 4
+
+    """
+    emptyCells = find_empty_cells(board)
+    if len(emptyCells) == 0:
+        print("no empty cells, return")
+        return
+
+    row, col = emptyCells[random.randint(0, len(emptyCells)-1)]
+    p = random.randint(0,99)
+    if p < 90:
+        board[row][col] = 2
+    else:
+        board[row][col] = 4
+
+
 def run():
     board = make_board(4)
     # place_two(board)
