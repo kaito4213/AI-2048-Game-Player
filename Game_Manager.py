@@ -131,8 +131,16 @@ def run_keyboard():
         print(" ")
         print("current score is, ", curr_score)
         print("Possible actions: up, left, right, down, exit")
-        print("Please press WASD for UP LEFT DOWN RIGHT")
-        action = keyboard_action[keyPress()]
+        print("Please press WASD for UP LEFT DOWN RIGHT Q for exit")
+        
+        p = keyPress()
+        if p == 'q' or p == 'Q':
+            break
+        while p not in keyboard_action:
+            print("key press not recognized, please press wasd or WASD")
+            p = keyPress()
+        
+        action = keyboard_action[p]
         action = action.upper()
         if action == "EXIT":
             break
@@ -153,4 +161,8 @@ def run_keyboard():
     print("To run this game, type run_keyboard()")
 
 if __name__ == "__main__":
-    run_keyboard()
+    from sys import platform
+    if platform.startswith('linux') or platform == 'darwin':
+        run_keyboard()
+    elif paltform == 'win32' or platform == 'cygwin':
+        run()
