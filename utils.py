@@ -16,7 +16,10 @@ def print_board(board):
     for row in range(0,N):
         print("           ")
         for col in range(0,N):
-            print(board[row][col], end="   ")
+            if board[row][col] != '*':
+                print(repr(board[row][col]).ljust(5), end="")
+            else:
+                print(board[row][col].ljust(5), end="")
 
 def check_full(board):
     """
