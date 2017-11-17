@@ -40,7 +40,7 @@ def find_empty_cells(board):
     N = len(board)
     for i in range(N):
         for j in range(N):
-            if board == '*':
+            if board[i][j] == '*':
                 emptyCells.append((i,j))
     
     return emptyCells
