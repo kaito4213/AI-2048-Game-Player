@@ -119,3 +119,25 @@ def clear():
     """
     import os
     b = os.system("clear")
+
+
+def keyPress():
+    """
+    simulate a key press event, may not work on Windows
+    tested in Ubuntu
+    """
+    import tty
+    import sys
+    import termios
+
+    orig_settings = termios.tcgetattr(sys.stdin)
+    tty.setraw(sys.stdin)
+
+    x = 0
+
+    if x != chr(27):
+        x = sys.stdin.read(1)[0]
+        # print("You pressed ", x)
+
+    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, orig_settings)
+    return x

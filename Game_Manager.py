@@ -2,6 +2,9 @@ from utils import *
 from logic import *
 import random
 
+keyboard_action = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
+                   'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
+
 class Board():
 
     def __init__(self, size = 4):
@@ -119,5 +122,35 @@ def run():
     print("Game end")
     print("To run this game, type run()")
 
+def run_keyboard():
+    board = make_board(4)
+    initial_two(board)
+    print_board(board)
+    curr_score = 0
+    while not check_end(board):
+        print(" ")
+        print("current score is, ", curr_score)
+        print("Possible actions: up, left, right, down, exit")
+        print("Please press WASD for UP LEFT DOWN RIGHT")
+        action = keyboard_action[keyPress()]
+        action = action.upper()
+        if action == "EXIT":
+            break
+        # take action here to do the move
+        # and clear current , then print board
+        if can_move(board, action):
+            move(board, action)
+            curr_score = add_up(board, action, curr_score)
+            move(board, action)
+            clear()
+            simple_add_num(board)
+            print_board(board)
+        else:
+            clear()
+            print_board(board)
+    print("")
+    print("Game end")
+    print("To run this game, type run_keyboard()")
+
 if __name__ == "__main__":
-    run()
+    run_keyboard()
