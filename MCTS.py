@@ -27,19 +27,52 @@ def naive_random_move(board, curr_score, test_moves=100):
             move(test_board, action)
             scores[i] = add_up(test_board, action,scores[i])
             move(test_board, action)
+            MCTS_place_two(test_board)
 
-            test_times = test_moves
+            test_times = test_moves-1
             while test_times >= 0 and not check_end(test_board):
                 test_action = moves[random.randint(0,3)]
                 if can_move(test_board,test_action):
                     move(test_board,test_action)
                     scores[i] = add_up(test_board,test_action,scores[i])
                     move(test_board,test_action)
+                    MCTS_place_two(test_board)
                 test_times -= 1
+
     if max(scores) == curr_score:
+        print("this time the AI can not make a move")
         return moves[random.randint(0,3)]
     else:
         return moves[scores.index(max(scores))]
+
+def MCTS_place_two(board):
+    """
+    place two number in the boar
+    """
+    N = len(board)
+    random_generate = random.randint(0,99)
+    # generate a new number of 2 with possibily of 50%
+    if random_generate < 90:
+        x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+        times = 0
+        while times < 10 and board[x1][y1] != '*':
+            x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+            times += 1
+
+        if board[x1][y1] == '*':
+            board[x1][y1] = 2
+
+    # generate a new number of 4 with possibily of 30%
+    if random_generate >= 90:
+        times = 0
+        x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+        while times < 3 and board[x1][y1] != '*':
+            x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+            times += 1
+
+        if board[x1][y1] == '*':
+            board[x1][y1] = 4
+
 
 def run_naive_MCTS(test_moves=50):
     board = make_board(4)
@@ -73,7 +106,7 @@ def run_naive_MCTS(test_moves=50):
             curr_score = add_up(board, action,curr_score)
             move(board, action)
             clear()
-            place_two(board)
+            MCTS_place_two(board)
             print_board(board)
             print(" ")
         else:
@@ -88,5 +121,5 @@ def run_naive_MCTS(test_moves=50):
                 human = True
 
         # time.sleep(0.2)
-
+    print("Your Score is ", curr_score)
     print("Game end")

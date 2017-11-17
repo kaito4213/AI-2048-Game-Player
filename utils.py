@@ -32,6 +32,19 @@ def check_full(board):
                 return False
     return True
 
+def find_empty_cells(board):
+    """
+    find all empty cells
+    """
+    emptyCells = []
+    N = len(board)
+    for i in range(N):
+        for j in range(N):
+            if board == '*':
+                emptyCells.append((i,j))
+    
+    return emptyCells
+    
 def check_end(board):
     """
     check if game is at the end state
