@@ -164,7 +164,7 @@ if __name__ == "__main__":
     from sys import platform
     if platform.startswith('linux') or platform == 'darwin':
         run_keyboard()
-    elif paltform == 'win32' or platform == 'cygwin':
+    elif platform == 'win32' or platform == 'cygwin':
         run()
     else:
         run()
