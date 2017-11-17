@@ -164,7 +164,7 @@ def can_move(board, action):
     if action == "RIGHT":
         for row in range(0,N):
             j = N-1
-            while j >= 0 and board[row][N-1-j] != '*':
+            while j >= 0 and board[row][j] != '*':
                 j -= 1
             for k in range(0, j):
                 if board[row][j] != None and board[row][k] != '*':
