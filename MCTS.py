@@ -47,34 +47,70 @@ def naive_random_move(board, curr_score, test_moves=100):
 
 def MCTS_place_two(board):
     """
-    place two number in the boar
+    place two number in the board
+
+    first find all the empy cells
+    if has > 2 empty cells, 95% add two number, 5% add one number
+    if has < 2 empty cells, 95% add one number, 5% add no number
+
+    if add two number:
+        one must be 2,
+        another 80% 2
+    
+    if add onw number:
+        80% 2
     """
     N = len(board)
-    random_generate = random.randint(0,99)
-    # generate a new number of 2 with possibily of 50%
-    if random_generate < 90:
-        x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
-        times = 0
-        while times < 10 and board[x1][y1] != '*':
-            x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
-            times += 1
+    emptyCells = find_empty_cells(board)
+    
+    num_emptyCell = len(emptyCells)
+    if num_emptyCell == 0:
+        print("no empty cells")
+        return
+    
+    add_how_many_number = 0
+    if num_emptyCell > 2:
+        p = random.randint(0,99)
+        if p < 95:
+            add_how_many_number = 2
+        else:
+            add_how_many_number = 1
+    else:
+        p = random.randint(0,99)
+        if p < 95:
+            add_how_many_number = 1
+        else:
+            add_how_many_number = 0
 
-        if board[x1][y1] == '*':
+    if add_how_many_number == 0:
+        print("Not add one number, move on")
+        return
+    elif add_how_many_number == 1:
+        # 80% add 2, 20% add 1
+        x1,y1 = emptyCells[random.randint(0,num_emptyCell-1)]
+        p = random.randint(0,99)
+        if p < 80:
             board[x1][y1] = 2
-
-    # generate a new number of 4 with possibily of 30%
-    if random_generate >= 90:
-        times = 0
-        x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
-        while times < 3 and board[x1][y1] != '*':
-            x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
-            times += 1
-
-        if board[x1][y1] == '*':
+        else:
             board[x1][y1] = 4
+    elif add_how_many_number == 2:
+        x1,y1 = emptyCells[random.randint(0,num_emptyCell-1)]
+        x2,y2 = emptyCells[random.randint(0,num_emptyCell-1)]
+        while (x2,y2) == (x1,y1):
+            x2,y2 = emptyCells[random.randint(0,num_emptyCell-1)]
+        
+        # first number be 2
+        board[x1][y1] = 2
 
+        # for second added number
+        # 80% add 2, 20% add 4
+        p = random.randint(0,99)
+        if p < 80:
+            board[x2][y2] = 2        
+        else:
+            board[x2][y2] = 4
 
-def run_naive_MCTS(test_moves=50):
+def run_naive_MCTS(test_moves=100):
     board = make_board(4)
     initial_two(board)
     print_board(board)
