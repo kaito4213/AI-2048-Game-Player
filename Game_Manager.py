@@ -166,3 +166,5 @@ if __name__ == "__main__":
         run_keyboard()
     elif paltform == 'win32' or platform == 'cygwin':
         run()
+    else:
+        run()
