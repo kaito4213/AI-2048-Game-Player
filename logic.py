@@ -58,15 +58,17 @@ def move(board, action):
                     firstEmpty -= 1
 
 
-def add_up(board, action):
+def add_up(board, action, curr_score):
     """
     After each move, we need to add up the same elem
     """    
+    new_score = curr_score
     N = len(board)
     if action == "UP":
         for col in range(0,N):
             for j in range(0, N-1):
                 if board[j][col] == board[j+1][col] and board[j][col] != '*':
+                    new_score += 2 * board[j][col]
                     board[j][col] = board[j][col] + board[j+1][col]
                     board[j+1][col] = '*'
 
@@ -75,6 +77,7 @@ def add_up(board, action):
             j = N-1
             while j > 0:
                 if board[j][col] == board[j-1][col] and board[j][col] != '*':
+                    new_score += 2 * board[j][col]
                     board[j][col] = board[j][col] + board[j-1][col]
                     board[j-1][col] = '*'
                 j -= 1
@@ -88,6 +91,7 @@ def add_up(board, action):
         for row in range(0, N):
             for j in range(0, N-1):
                 if board[row][j] == board[row][j+1] and board[row][j] != '*':
+                    new_score += 2 * board[row][j]
                     board[row][j] = board[row][j] + board[row][j+1]
                     board[row][j+1] = '*'
 
@@ -96,10 +100,12 @@ def add_up(board, action):
             j = N-1
             while j > 0:
                 if board[row][j] == board[row][j-1] and board[row][j] != '*':
+                    new_score += 2 * board[row][j]
                     board[row][j] = board[row][j] + board[row][j-1]
                     board[row][j-1] = '*'
                 j -= 1
 
+    return new_score
             # for j in range(0,N-1):
             #     if board[row][N-1-j] == board[row][N-j]:
             #         board[row][N-1-j] = board[row][N-1-j] + board[row][N-j]
