@@ -7,6 +7,8 @@ from sys import platform
 import keyboard
 import reprlib
 
+from MCTS import naive_random_move
+
 SIZE = 500
 GRID_LEN = 4
 GRID_PADDING = 10
@@ -25,7 +27,7 @@ FONT = ("Verdana", 40, "bold")
 
 
 class GameGrid(Frame):
-    def __init__(self):
+    def __init__(self, AI_mode=True):
         Frame.__init__(self)
         self.actions = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
                          'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
@@ -37,6 +39,8 @@ class GameGrid(Frame):
         self.init_matrix()
         self.update_grid_cells()
 
+        if AI_mode:
+            self.simple_mcts_AI_run()
         self.mainloop()
 
     def init_grid(self):
@@ -93,5 +97,17 @@ class GameGrid(Frame):
             index = (self.gen(), self.gen())
         self.matrix[index[0]][index[1]] = 2
 
+    def simple_mcts_AI_run(self):
+        while not check_end(self.matrix):
+            action, successBoards = naive_random_move(self.matrix,self.score,test_moves=30)
+            if can_move(self.matrix,action):
+                move(self.matrix, action)
+                self.score += add_up_v2(self.matrix, action)
+                simple_add_num(self.matrix)
+                self.update_grid_cells()
+                if check_end(self.matrix):
+                    self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                    self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
 
-gamegrid = GameGrid()
+
+gamegrid = GameGrid(AI_mode=True)
