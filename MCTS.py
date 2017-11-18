@@ -33,27 +33,38 @@ def naive_random_move(board, curr_score, test_moves=100):
 
             move(test_board, action)
             scores[i] = add_up(test_board, action, scores[i])
+            # scores[i] += add_up_v2(test_board, action) 
             move(test_board, action)
             simple_add_num(test_board)
 
-            test_times = test_moves - 1
-            run_times = 0
-            # while test_times > 0 and not check_end(test_board):
-            while not check_end(test_board):
-                test_action = moves[random.randint(0, 3)]
-                # print("test for action", test_action, " in the ", test_times, " test times")
-                # print_board(test_board)
-                if can_move(test_board, test_action):
 
-                    move(test_board, test_action)
-                    scores[i] = add_up(test_board, test_action, scores[i])
-                    move(test_board, test_action)
-                    simple_add_num(test_board)
-                    run_times += 1
-                    test_times -= 1
+            total_runs = 0
+            total_add_score = 0
+            tmp_board = copy.deepcopy(test_board)
+            for runs in range(test_moves):
+                
+                run_times = 1
+                test_board = copy.deepcopy(tmp_board)
+                
+                while not check_end(test_board):
+                    test_action = moves[random.randint(0, 3)]
+                    # print("test for action", test_action, " in the ", test_times, " test times")
+                    # print_board(test_board)
+                    if can_move(test_board, test_action):
 
-            if find_max_cell(test_board) > 4096:
-                successBoards.append(test_board)
+                        move(test_board, test_action)
+                        # scores[i] = add_up(test_board, test_action, scores[i])
+                        total_add_score += add_up_v2(test_board, test_action)                    
+                        move(test_board, test_action)
+                        simple_add_num(test_board)
+                        run_times += 1
+                
+                total_runs += run_times
+            # scores[i] = scores[i] / run_times
+                if find_max_cell(test_board) > 4096:
+                    successBoards.append(test_board)
+            print("avg run times :", total_runs / test_moves)
+            scores[i] += total_add_score / total_runs
 
     if max(scores) == curr_score:
         print("this time the AI can not make a move")
@@ -78,8 +89,8 @@ def simple_add_num(board):
 
     row, col = emptyCells[random.randint(0, len(emptyCells) - 1)]
     random.seed()
-    p = random.randint(0, 99)
-    if p < 90:
+    p = random.random()
+    if p < 0.9:
         board[row][col] = 2
     else:
         board[row][col] = 4
@@ -190,7 +201,8 @@ def run_naive_MCTS(N=4,test_moves=100):
         # and clear current , then print board
         if can_move(board, action):
             move(board, action)
-            curr_score = add_up(board, action, curr_score)
+            # curr_score = add_up(board, action, curr_score)
+            curr_score += add_up_v2(board, action)
             move(board, action)
             clear()
             simple_add_num(board)
@@ -260,3 +272,92 @@ def run_many_times():
         how_many_times -= 1
 
     print(scores)
+
+
+def evalScore(board):
+    """
+    evaluate the score for current score
+    """
+    N = len(board)
+    eval_matrix = [[1 for i in range(N)] for i in range(N)]
+    eval_matrix = np.array(eval_matrix)
+    
+    eval_matrix[0][0] = 4 ** 15
+    eval_matrix[0][1] = 4 ** 14
+    eval_matrix[0][2] = 4 ** 13
+    eval_matrix[0][3] = 4 ** 12
+
+    eval_matrix[1][0] = 4 ** 8
+    eval_matrix[1][1] = 4 ** 9
+    eval_matrix[1][2] = 4 ** 10
+    eval_matrix[1][3] = 4 ** 11
+    
+    eval_matrix[2][0] = 4 ** 7
+    eval_matrix[2][1] = 4 ** 6
+    eval_matrix[2][2] = 4 ** 5
+    eval_matrix[2][3] = 4 ** 4
+
+    eval_matrix[3][0] = 4 ** 0
+    eval_matrix[3][1] = 4 ** 1
+    eval_matrix[3][2] = 4 ** 2
+    eval_matrix[3][3] = 4 ** 3
+    
+    # print(eval_matrix)
+
+    score = 0
+    for i in range(N):
+        for j in range(N):
+            if board[i][j] != '*':
+                score += board[i][j] * eval_matrix[i][j]
+
+    return score
+
+
+def add_up_v2(board, action):
+    """
+    After each move, we need to add up the same elem
+    """    
+    add_score = 0
+    N = len(board)
+    if action == "UP":
+        for col in range(0,N):
+            for j in range(0, N-1):
+                if board[j][col] == board[j+1][col] and board[j][col] != '*':
+                    add_score += 2 * board[j][col]
+                    board[j][col] = board[j][col] + board[j+1][col]
+                    board[j+1][col] = '*'
+
+    if action == "DOWN":
+        for col in range(0,N):
+            j = N-1
+            while j > 0:
+                if board[j][col] == board[j-1][col] and board[j][col] != '*':
+                    add_score += 2 * board[j][col]
+                    board[j][col] = board[j][col] + board[j-1][col]
+                    board[j-1][col] = '*'
+                j -= 1
+
+            # for j in range(0, N-1):
+            #     if board[N-1-j][col] == board[N-j][col]:
+            #         board[N-1-j][col] = board[N-1-j][col] + board[N-j][col]
+            #         board[N-j][col] = '*'
+
+    if action == "LEFT":
+        for row in range(0, N):
+            for j in range(0, N-1):
+                if board[row][j] == board[row][j+1] and board[row][j] != '*':
+                    add_score += 2 * board[row][j]
+                    board[row][j] = board[row][j] + board[row][j+1]
+                    board[row][j+1] = '*'
+
+    if action == "RIGHT":
+        for row in range(0,N):
+            j = N-1
+            while j > 0:
+                if board[row][j] == board[row][j-1] and board[row][j] != '*':
+                    add_score += 2 * board[row][j]
+                    board[row][j] = board[row][j] + board[row][j-1]
+                    board[row][j-1] = '*'
+                j -= 1
+
+    return add_score
