@@ -1,6 +1,6 @@
 from logic import *
 from utils import *
-from Game_Manager import initial_two, place_two
+from game_manager import initial_two, place_two
 
 
 import numpy as np
@@ -236,7 +236,7 @@ def human_run():
         print("current score is, ", curr_score)
         print("Possible actions: up, left, right, down, exit")
         print("Please press WASD for UP LEFT DOWN RIGHT")
-        action = keyboard_action[keyPress()]
+        action = keyboard_action[key_press()]
         action = action.upper()
         if action == "EXIT":
             break

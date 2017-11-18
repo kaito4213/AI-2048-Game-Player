@@ -5,8 +5,8 @@ from sys import platform
 import keyboard
 
 
-keyboard_action = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
-                   'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
+ACTIONS = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
+           'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
 
 class Board():
 
@@ -96,79 +96,12 @@ def simple_add_num(board):
         board[row][col] = 4
 
 
-# def run():
-#     board = make_board(4)
-#     # place_two(board)
-#     initial_two(board)
-#     print_board(board)
-#     curr_score = 0
-#     while not check_end(board):
-#         print(" ")
-#         print("current score is, ",curr_score)
-#         print("Possible actions: up, left, right, down, exit")
-#         action = input('Your action: ')
-#         action = action.upper()
-#         if action == "EXIT":
-#             break
-#         # take action here to do the move
-#         # and clear current , then print board
-#         if can_move(board, action):
-#             move(board, action)
-#             curr_score = add_up(board, action,curr_score)
-#             move(board, action)
-#             clear()
-#             place_two(board)
-#             print_board(board)
-#         else:
-#             clear()
-#             print_board(board)
-#     print("Game end")
-#     print("To run this game, type run()")
-
-def run_keyboard():
-    board = make_board(4)
-    initial_two(board)
-    print_board(board)
-    curr_score = 0
-    while not check_end(board):
-        print(" ")
-        print("current score is, ", curr_score)
-        print("Possible actions: up, left, right, down, exit")
-        print("Please press WASD for UP LEFT DOWN RIGHT Q for exit")
-
-        p = keyPress()
-        if p == 'q' or p == 'Q':
-            break
-        while p not in keyboard_action:
-            print("key press not recognized, please press wasd or WASD")
-            p = keyPress()
-        
-        action = keyboard_action[p]
-        action = action.upper()
-        if action == "EXIT":
-            break
-        # take action here to do the move
-        # and clear current , then print board
-        if can_move(board, action):
-            move(board, action)
-            curr_score = add_up(board, action, curr_score)
-            move(board, action)
-            clear()
-            simple_add_num(board)
-            print_board(board)
-        else:
-            clear()
-            print_board(board)
-    print("")
-    print("Game end")
-    print("To run this game, type run_keyboard()")
-
-def winPress():
+def win32_press():
     flag = True
     p = None
     while flag:
         try:
-            for i in keyboard_action:
+            for i in ACTIONS:
                 if keyboard.is_pressed(i):
                     p = i
                     flag = False
@@ -182,11 +115,11 @@ def winPress():
             pass
     return p
 
-def linuxPress():
-    p = keyPress()
-    while p not in keyboard_action:
+def linux_press():
+    p = key_press()
+    while p not in ACTIONS:
         print("key press not recognized, please press wasd or WASD")
-        p = keyPress()
+        p = key_press()
     return p
 
 def run():
@@ -200,15 +133,15 @@ def run():
         print("Please press WASD for UP LEFT DOWN RIGHT Q for exit")
 
         if platform.startswith('linux') or platform == 'darwin':
-            p = linuxPress()
+            p = linux_press()
         elif platform == 'win32' or platform == 'cygwin':
-            p = winPress()
+            p = win32_press()
         else:
-            p = winPress()
+            p = win32_press()
 
         if p == 'q' or p == 'Q':
             break
-        action = keyboard_action[p]
+        action = ACTIONS[p]
         action = action.upper()
         if action == "EXIT":
             break
@@ -217,7 +150,7 @@ def run():
         if can_move(board, action):
             move(board, action)
             curr_score = add_up(board, action, curr_score)
-            move(board, action)
+            # move(board, action)
             clear()
             simple_add_num(board)
             print_board(board)
@@ -229,12 +162,6 @@ def run():
 
 
 if __name__ == "__main__":
-
-    # if platform.startswith('linux') or platform == 'darwin':
-    #     run_keyboard()
-    # elif platform == 'win32' or platform == 'cygwin':
-    #     run()
-    # else:
     run()
 
 
