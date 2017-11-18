@@ -2,15 +2,14 @@ from logic import *
 from utils import *
 from Game_Manager import initial_two, place_two
 
+
+import numpy as np
 import time
 import random
 import copy
 
 keyboard_action = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
                    'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
-
-moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
-
 
 def naive_random_move(board, curr_score, test_moves=100):
     """
@@ -20,6 +19,8 @@ def naive_random_move(board, curr_score, test_moves=100):
 
     return value is one of action
     """
+
+    moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 
     successBoards = []
 
@@ -36,7 +37,9 @@ def naive_random_move(board, curr_score, test_moves=100):
             simple_add_num(test_board)
 
             test_times = test_moves - 1
-            while test_times > 0 and not check_end(test_board):
+            run_times = 0
+            # while test_times > 0 and not check_end(test_board):
+            while not check_end(test_board):
                 test_action = moves[random.randint(0, 3)]
                 # print("test for action", test_action, " in the ", test_times, " test times")
                 # print_board(test_board)
@@ -46,9 +49,10 @@ def naive_random_move(board, curr_score, test_moves=100):
                     scores[i] = add_up(test_board, test_action, scores[i])
                     move(test_board, test_action)
                     simple_add_num(test_board)
-
+                    run_times += 1
                     test_times -= 1
-            if find_max_cell(test_board) >= 2048:
+
+            if find_max_cell(test_board) > 4096:
                 successBoards.append(test_board)
 
     if max(scores) == curr_score:
@@ -147,11 +151,11 @@ def MCTS_place_two(board):
             board[x2][y2] = 4
 
 
-def run_naive_MCTS(test_moves=100):
+def run_naive_MCTS(N=4,test_moves=100):
 
     random.seed()
 
-    board = make_board(4)
+    board = make_board(N)
     initial_two(board)
     print_board(board)
     curr_score = 0
@@ -207,9 +211,10 @@ def run_naive_MCTS(test_moves=100):
     print("Your Score is ", curr_score)
     print("Max number in board is", find_max_cell(board))
     print("Game end")
+    return find_max_cell(board)
 
 
-def run_keyboard():
+def human_run():
     board = make_board(4)
     initial_two(board)
     print_board(board)
@@ -237,4 +242,60 @@ def run_keyboard():
             print_board(board)
     print("")
     print("Game end")
+    print("Your Score is ", curr_score)
+    print("Max number in board is", find_max_cell(board))
     print("To run this game, type run()")
+
+
+def run_many_times():
+    how_many_times = 50
+    max_score = 0
+    scores = {}
+    while how_many_times >= 0:
+        max_score = run_naive_MCTS(test_moves=100)
+        if max_score in scores:
+            scores[max_score] += 1
+        else:
+            scores[max_score] = 1
+        how_many_times -= 1
+
+    print(scores)
+
+
+def evalScore(board):
+    """
+    evaluate the score for current score
+    """
+    N = len(board)
+    eval_matrix = [[1 for i in range(N)] for i in range(N)]
+    eval_matrix = np.array(eval_matrix)
+    
+    eval_matrix[0][0] = 4 ** 15
+    eval_matrix[0][1] = 4 ** 14
+    eval_matrix[0][2] = 4 ** 13
+    eval_matrix[0][3] = 4 ** 12
+
+    eval_matrix[1][0] = 4 ** 8
+    eval_matrix[1][1] = 4 ** 9
+    eval_matrix[1][2] = 4 ** 10
+    eval_matrix[1][3] = 4 ** 11
+    
+    eval_matrix[2][0] = 4 ** 7
+    eval_matrix[2][1] = 4 ** 6
+    eval_matrix[2][2] = 4 ** 5
+    eval_matrix[2][3] = 4 ** 4
+
+    eval_matrix[3][0] = 4 ** 0
+    eval_matrix[3][1] = 4 ** 1
+    eval_matrix[3][2] = 4 ** 2
+    eval_matrix[3][3] = 4 ** 3
+    
+    # print(eval_matrix)
+
+    score = 0
+    for i in range(N):
+        for j in range(N):
+            if board[i][j] != '*':
+                score += board[i][j] * eval_matrix[i][j]
+
+    return score
