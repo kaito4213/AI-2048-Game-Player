@@ -1,6 +1,9 @@
 from utils import *
 from logic import *
 import random
+from sys import platform
+import keyboard
+
 
 keyboard_action = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
                    'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
@@ -93,34 +96,34 @@ def simple_add_num(board):
         board[row][col] = 4
 
 
-def run():
-    board = make_board(4)
-    # place_two(board)
-    initial_two(board)
-    print_board(board)
-    curr_score = 0
-    while not check_end(board):
-        print(" ")
-        print("current score is, ",curr_score)
-        print("Possible actions: up, left, right, down, exit")
-        action = input('Your action: ')
-        action = action.upper()
-        if action == "EXIT":
-            break
-        # take action here to do the move
-        # and clear current , then print board
-        if can_move(board, action):
-            move(board, action)
-            curr_score = add_up(board, action,curr_score)
-            move(board, action)
-            clear()
-            place_two(board)
-            print_board(board)
-        else:
-            clear()
-            print_board(board)
-    print("Game end")
-    print("To run this game, type run()")
+# def run():
+#     board = make_board(4)
+#     # place_two(board)
+#     initial_two(board)
+#     print_board(board)
+#     curr_score = 0
+#     while not check_end(board):
+#         print(" ")
+#         print("current score is, ",curr_score)
+#         print("Possible actions: up, left, right, down, exit")
+#         action = input('Your action: ')
+#         action = action.upper()
+#         if action == "EXIT":
+#             break
+#         # take action here to do the move
+#         # and clear current , then print board
+#         if can_move(board, action):
+#             move(board, action)
+#             curr_score = add_up(board, action,curr_score)
+#             move(board, action)
+#             clear()
+#             place_two(board)
+#             print_board(board)
+#         else:
+#             clear()
+#             print_board(board)
+#     print("Game end")
+#     print("To run this game, type run()")
 
 def run_keyboard():
     board = make_board(4)
@@ -132,7 +135,7 @@ def run_keyboard():
         print("current score is, ", curr_score)
         print("Possible actions: up, left, right, down, exit")
         print("Please press WASD for UP LEFT DOWN RIGHT Q for exit")
-        
+
         p = keyPress()
         if p == 'q' or p == 'Q':
             break
@@ -160,11 +163,78 @@ def run_keyboard():
     print("Game end")
     print("To run this game, type run_keyboard()")
 
+def winPress():
+    flag = True
+    p = None
+    while flag:
+        try:
+            for i in keyboard_action:
+                if keyboard.is_pressed(i):
+                    p = i
+                    flag = False
+                    break
+            for i in ["q", "Q"]:
+                if keyboard.is_pressed(i):
+                    p = i
+                    flag = False
+                    break
+        except:
+            pass
+    return p
+
+def linuxPress():
+    p = keyPress()
+    while p not in keyboard_action:
+        print("key press not recognized, please press wasd or WASD")
+        p = keyPress()
+    return p
+
+def run():
+    board = make_board(4)
+    initial_two(board)
+    print_board(board)
+    curr_score = 0
+    while not check_end(board):
+        print("\ncurrent score is, ", curr_score)
+        print("Possible actions: up, left, right, down, exit")
+        print("Please press WASD for UP LEFT DOWN RIGHT Q for exit")
+
+        if platform.startswith('linux') or platform == 'darwin':
+            p = linuxPress()
+        elif platform == 'win32' or platform == 'cygwin':
+            p = winPress()
+        else:
+            p = winPress()
+
+        if p == 'q' or p == 'Q':
+            break
+        action = keyboard_action[p]
+        action = action.upper()
+        if action == "EXIT":
+            break
+        # take action here to do the move
+        # and clear current , then print board
+        if can_move(board, action):
+            move(board, action)
+            curr_score = add_up(board, action, curr_score)
+            move(board, action)
+            clear()
+            simple_add_num(board)
+            print_board(board)
+        else:
+            clear()
+            print_board(board)
+    print("/nGame end/nTo run this game, type run_keyboard()")
+
+
+
 if __name__ == "__main__":
-    from sys import platform
-    if platform.startswith('linux') or platform == 'darwin':
-        run_keyboard()
-    elif platform == 'win32' or platform == 'cygwin':
-        run()
-    else:
-        run()
+
+    # if platform.startswith('linux') or platform == 'darwin':
+    #     run_keyboard()
+    # elif platform == 'win32' or platform == 'cygwin':
+    #     run()
+    # else:
+    run()
+
+
