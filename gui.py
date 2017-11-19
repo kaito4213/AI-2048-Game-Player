@@ -101,6 +101,7 @@ class GameGrid(Frame):
             if can_move(self.matrix, action):
                 move(self.matrix, action)
                 self.score = add_up(self.matrix, action, self.score)
+                move(self.matrix, action)
                 simple_add_num(self.matrix)
                 self.update_grid_cells()
                 if check_end(self.matrix):
@@ -119,6 +120,8 @@ class GameGrid(Frame):
             if can_move(self.matrix,action):
                 move(self.matrix, action)
                 self.score += add_up_v2(self.matrix, action)
+                move(self.matrix, action)
+                self.update_grid_cells()
                 simple_add_num(self.matrix)
                 self.update_grid_cells()
                 if check_end(self.matrix):
