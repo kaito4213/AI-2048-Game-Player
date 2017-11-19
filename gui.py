@@ -6,7 +6,7 @@ from game_manager import *
 from sys import platform
 import keyboard
 import reprlib
-
+import threading
 from MCTS import naive_random_move
 
 SIZE = 500
@@ -40,8 +40,24 @@ class GameGrid(Frame):
         self.update_grid_cells()
 
         if AI_mode:
-            self.simple_mcts_AI_run()
+
+            if platform == 'win32' or platform == 'cygwin':
+                class clipboardthread(threading.Thread):
+                    def __init__(self):
+                        threading.Thread.__init__(self)
+
+                    def run(self):
+                        clipboardcheck()
+
+                def clipboardcheck():
+                    self.simple_mcts_AI_run()
+                clipboardthread.daemon = True
+
+                clipboardthread().start()
+            else:
+                self.simple_mcts_AI_run()
         self.mainloop()
+
 
     def init_grid(self):
         background = Frame(self, bg=BACKGROUND_COLOR_GAME, width=SIZE, height=SIZE)
@@ -108,6 +124,7 @@ class GameGrid(Frame):
                 if check_end(self.matrix):
                     self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
                     self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
+
 
 
 gamegrid = GameGrid(AI_mode=True)
