@@ -50,16 +50,7 @@ class GameGrid(Frame):
                         clipboardcheck()
 
                 def clipboardcheck():
-                    while not check_end(self.matrix):
-                        action, successBoards = naive_random_move(self.matrix, self.score, test_moves=30)
-                        if can_move(self.matrix, action):
-                            move(self.matrix, action)
-                            self.score += add_up_v2(self.matrix, action)
-                            simple_add_num(self.matrix)
-                            self.update_grid_cells()
-                            if check_end(self.matrix):
-                                self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
-                                self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                    self.simple_mcts_AI_run()
                 clipboardthread.daemon = True
 
                 clipboardthread().start()
