@@ -42,7 +42,6 @@ class GameGrid(Frame):
         self.update_grid_cells()
 
         if AI_mode:
-
             if platform == 'win32' or platform == 'cygwin':
                 class clipboardthread(threading.Thread):
                     def __init__(self):
