@@ -4,7 +4,7 @@ import copy
 
 from logic import *
 from utils import *
-from Game_Manager import initial_two, simple_add_num
+from game_manager import initial_two, simple_add_num
 
 moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 prob = {0: 0, 2: 0.9, 4: 0.1}
@@ -70,20 +70,20 @@ def expectimax(board, depth):
 
             new_board[row][col] = new_num
 
-            for dir in moves:
-                if not can_move(board, dir):
+            for directions in moves:
+                if not can_move(board, directions):
                     continue
 
                 #move new board in dir
                 temp_board = copy.deepcopy(new_board)
-                move(temp_board, dir)
-                add_up(temp_board, dir, 0)
-                move(temp_board, dir)
+                move(temp_board, directions)
+                add_up(temp_board, directions, 0)
+                move(temp_board, directions)
                 score = expectimax(temp_board, depth - 1)
 
                 if score > best_score:
                     best_score = score
-                    best_move = dir
+                    best_move = directions
 
             if best_move != None:
                 tot_score += prob[new_num] * best_score
