@@ -111,6 +111,51 @@ def add_up(board, action, curr_score):
             #         board[row][N-1-j] = board[row][N-1-j] + board[row][N-j]
             #         board[row][N-j] = '*'
 
+def add_up_v2(board, action):
+    """
+    After each move, we need to add up the same elem, another version
+    """    
+    add_score = 0
+    N = len(board)
+    if action == "UP":
+        for col in range(0,N):
+            for j in range(0, N-1):
+                if board[j][col] == board[j+1][col] and board[j][col] != '*':
+                    add_score += 2 * board[j][col]
+                    board[j][col] = board[j][col] + board[j+1][col]
+                    board[j+1][col] = '*'
+
+    if action == "DOWN":
+        for col in range(0,N):
+            j = N-1
+            while j > 0:
+                if board[j][col] == board[j-1][col] and board[j][col] != '*':
+                    add_score += 2 * board[j][col]
+                    board[j][col] = board[j][col] + board[j-1][col]
+                    board[j-1][col] = '*'
+                j -= 1
+
+    if action == "LEFT":
+        for row in range(0, N):
+            for j in range(0, N-1):
+                if board[row][j] == board[row][j+1] and board[row][j] != '*':
+                    add_score += 2 * board[row][j]
+                    board[row][j] = board[row][j] + board[row][j+1]
+                    board[row][j+1] = '*'
+
+    if action == "RIGHT":
+        for row in range(0,N):
+            j = N-1
+            while j > 0:
+                if board[row][j] == board[row][j-1] and board[row][j] != '*':
+                    add_score += 2 * board[row][j]
+                    board[row][j] = board[row][j] + board[row][j-1]
+                    board[row][j-1] = '*'
+                j -= 1
+
+    return add_score
+
+
 def can_move(board, action):
     """
     Check if can make a move based on action 

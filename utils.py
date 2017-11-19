@@ -121,7 +121,7 @@ def clear():
     b = os.system("clear")
 
 
-def keyPress():
+def key_press():
     """
     simulate a key press event, may not work on Windows
     tested in Ubuntu
