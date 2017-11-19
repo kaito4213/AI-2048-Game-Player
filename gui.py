@@ -7,6 +7,9 @@ from sys import platform
 import keyboard
 import reprlib
 import threading
+import copy
+
+from expectimax import expectimax
 from MCTS import naive_random_move
 
 SIZE = 500
@@ -23,11 +26,10 @@ CELL_COLOR_DICT = {2: "#776e65", 4: "#776e65", 8: "#f9f6f2", 16: "#f9f6f2",
                    512: "#f9f6f2", 1024: "#f9f6f2", 2048: "#f9f6f2"}
 FONT = ("Verdana", 40, "bold")
 
-
-
+moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 
 class GameGrid(Frame):
-    def __init__(self, AI_mode=True):
+    def __init__(self, AI_mode=True, which_AI = 'expectimax'):
         Frame.__init__(self)
         self.actions = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
                          'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
@@ -50,12 +52,18 @@ class GameGrid(Frame):
                         clipboardcheck()
 
                 def clipboardcheck():
-                    self.simple_mcts_AI_run()
+                    if which_AI.upper() == 'EXPECTIMAX':
+                        self.expectimax_AI_run()
+                    elif which_AI == 'MCTS':
+                        self.simple_mcts_AI_run()
                 clipboardthread.daemon = True
 
                 clipboardthread().start()
             else:
-                self.simple_mcts_AI_run()
+                if which_AI.upper() == 'EXPECTIMAX':
+                    self.expectimax_AI_run()
+                elif which_AI == 'MCTS':
+                    self.simple_mcts_AI_run()
         self.mainloop()
 
 
@@ -128,6 +136,34 @@ class GameGrid(Frame):
                     self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
                     self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
 
+    def expectimax_AI_run(self):
+        while not check_end(self.matrix):
+
+            depth = 2
+            best_move = None
+            best_val = -1
+
+            for direction in moves:
+                if not can_move(self.matrix, direction):
+                    # clear()
+                    continue
+
+                temp_board = copy.deepcopy(self.matrix)
+                move(temp_board, direction)
+                add_up(temp_board, direction, 0)
+                move(temp_board, direction)
+
+                alpha = expectimax(temp_board, depth)
+                if best_val < alpha:
+                    best_val = alpha
+                    best_move = direction
+
+            move(self.matrix,best_move)
+            add_up_v2(self.matrix,best_move)
+            move(self.matrix,best_move)
+            self.update_grid_cells()
+            simple_add_num(self.matrix)
+            self.update_grid_cells()
 
 
-gamegrid = GameGrid(AI_mode=True)
+gamegrid = GameGrid(AI_mode=True,which_AI='expectimax')
