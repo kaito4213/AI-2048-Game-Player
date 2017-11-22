@@ -1,13 +1,13 @@
 # The code mainly comes from https://github.com/yangshun/2048-python/blob/master/puzzle.py
-import threading
 import copy
-from tkinter import *
-from logic import *
+import threading
 from random import *
-from game_manager import *
+from tkinter import *
 from sys import platform
-from expectimax import expectimax
-from MCTS import naive_random_move
+from algorithms.MCTS import naive_random_move
+from algorithms.expectimax import expectimax
+from core.utils import *
+from core.logic import *
 
 SIZE = 500
 GRID_LEN = 4
@@ -183,4 +183,3 @@ class GameGrid(Frame):
             self.update_grid_cells()
 
 
-gamegrid = GameGrid(AI_mode=True, which_AI='expectimax')

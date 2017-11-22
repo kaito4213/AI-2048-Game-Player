@@ -2,7 +2,7 @@
 #                                 second find if there are same numbers, add them up
 #                                 third move them 
 
-from utils import *
+from core.utils import *
 
 def move_up(board):
     """

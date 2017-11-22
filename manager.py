@@ -1,11 +1,8 @@
-from utils import *
-from logic import *
-
 from sys import platform
+from core.gui import GameGrid
+from core.logic import *
 
-
-
-ACTIONS = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
+ACTIONS_MAP = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
            'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
 
 
@@ -15,7 +12,7 @@ def win32_press():
     p = None
     while flag:
         try:
-            for i in ACTIONS:
+            for i in ACTIONS_MAP:
                 if keyboard.is_pressed(i):
                     p = i
                     flag = False
@@ -32,13 +29,13 @@ def win32_press():
 
 def linux_press():
     p = key_press()
-    while p not in ACTIONS:
+    while p not in ACTIONS_MAP:
         print("key press not recognized, please press wasd or WASD")
         p = key_press()
     return p
 
 
-def run():
+def run_console():
     board = make_board(4)
     initial_two(board)
     print_board(board)
@@ -57,7 +54,7 @@ def run():
 
         if p == 'q' or p == 'Q':
             break
-        action = ACTIONS[p]
+        action = ACTIONS_MAP[p]
         action = action.upper()
         if action == "EXIT":
             break
@@ -76,8 +73,19 @@ def run():
     print("/nGame end/nTo run this game, type run_keyboard()")
 
 
+def run_gui():
+    GameGrid(AI_mode=True, which_AI='expectimax')
+
+
+def run(mode = "gui"):
+    if mode == "gui":
+        run_gui()
+    elif mode == "console":
+        run_console()
+    else:
+        raise ValueError("Unexpect Mode. Choose one from 'gui' or 'console'")
 
 if __name__ == "__main__":
-    run()
+    run(mode = "gui")
 
 

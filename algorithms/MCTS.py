@@ -1,10 +1,7 @@
-from logic import *
-from utils import *
-
-import numpy as np
-import time
-import random
 import copy
+
+from core.logic import *
+from core.utils import *
 
 keyboard_action = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
                    'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}

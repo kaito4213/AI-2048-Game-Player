@@ -1,10 +1,8 @@
-import numpy as np
-import random
 import copy
+import numpy as np
 
-from logic import *
-from utils import *
-
+from core.logic import *
+from core.utils import *
 
 moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 prob = {0: 0, 2: 0.9, 4: 0.1}
