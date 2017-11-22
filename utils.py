@@ -1,4 +1,7 @@
+import random
+
 Actions = ("Up", "Down", "Left", "Right")
+
 
 def make_board(N):
     assert N >= 1, "Invalid Dimension"
@@ -21,6 +24,7 @@ def print_board(board):
             else:
                 print(board[row][col].ljust(5), end="")
 
+
 def check_full(board):
     """
     Check if board is full
@@ -31,6 +35,7 @@ def check_full(board):
             if board[i][j] == '*':
                 return False
     return True
+
 
 def find_empty_cells(board):
     """
@@ -44,7 +49,8 @@ def find_empty_cells(board):
                 emptyCells.append((i,j))
     
     return emptyCells
-    
+
+
 def find_max_cell(board):
     """
     find the maximum number in the cell
@@ -57,6 +63,7 @@ def find_max_cell(board):
                 best_cell = board[i][j]
     
     return best_cell
+
 
 def check_end(board):
     """
@@ -82,6 +89,7 @@ def check_end(board):
     
     return True
 
+
 def get_elem(board, p):
     """
     get the elem in board position p(x, y)
@@ -92,6 +100,7 @@ def get_elem(board, p):
         return None
 
     return board[x][y]
+
 
 def place_elem(board, p, elem):
     """
@@ -141,3 +150,81 @@ def key_press():
 
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, orig_settings)
     return x
+
+
+def initial_two(board):
+    """
+    initial two on the board
+    place_two() only uses after each move, because place two some times place no number
+    which should not occur in the beginning
+    """
+    N = len(board)
+    x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+    times = 0
+    while times < 10 and board[x1][y1] != '*':
+        x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+        times += 1
+
+    if board[x1][y1] == '*':
+        board[x1][y1] = 2
+
+    times = 0
+    x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+    while times < 3 and board[x1][y1] != '*':
+        x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+        times += 1
+
+    if board[x1][y1] == '*':
+        board[x1][y1] = 4
+
+
+def place_two(board):
+    """
+    place two number in the board
+    """
+    N = len(board)
+    random_generate_2 = random.randint(0,10)
+    # generate a new number of 2 with possibily of 50%
+    if random_generate_2 < 5:
+        x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+        times = 0
+        while times < 10 and board[x1][y1] != '*':
+            x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+            times += 1
+
+        if board[x1][y1] == '*':
+            board[x1][y1] = 2
+
+    random_generate_4 = random.randint(0, 10)
+    # generate a new number of 2 with possibily of 30%
+    if random_generate_4 < 3:
+        times = 0
+        x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+        while times < 3 and board[x1][y1] != '*':
+            x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
+            times += 1
+
+        if board[x1][y1] == '*':
+            board[x1][y1] = 4
+
+
+def simple_add_num(board):
+    """
+    simple add a number in the board
+
+    if tile has empty, find it, and then
+    90% add 2
+    10% add 4
+
+    """
+    emptyCells = find_empty_cells(board)
+    if len(emptyCells) == 0:
+        print("no empty cells, return")
+        return
+
+    row, col = emptyCells[random.randint(0, len(emptyCells)-1)]
+    p = random.randint(0,99)
+    if p < 90:
+        board[row][col] = 2
+    else:
+        board[row][col] = 4

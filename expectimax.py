@@ -4,12 +4,13 @@ import copy
 
 from logic import *
 from utils import *
-from game_manager import initial_two, simple_add_num
+
 
 moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 prob = {0: 0, 2: 0.9, 4: 0.1}
 
-def evalScore(board):
+
+def eval_score(board):
     """
     evaluate the score for current score
     """
@@ -47,11 +48,12 @@ def evalScore(board):
 
     return score
 
+
 def expectimax(board, depth):
     tot_score = 0
     tot_prob = 0
     if depth == 0:
-        return evalScore(board)
+        return eval_score(board)
 
     else:
         for empty in find_empty_cells(board):
@@ -88,7 +90,7 @@ def expectimax(board, depth):
             if best_move != None:
                 tot_score += prob[new_num] * best_score
             else:
-                tot_score += prob[new_num] * evalScore(temp_board)
+                tot_score += prob[new_num] * eval_score(temp_board)
             tot_prob += prob[new_num]
 
         if tot_prob == 0:
@@ -131,6 +133,7 @@ def run_expectimax():
         clear()
         print_board(board)
         simple_add_num(board)
+
 
 if __name__ == "__main__":
     run_expectimax()

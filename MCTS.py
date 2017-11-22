@@ -1,7 +1,5 @@
 from logic import *
 from utils import *
-from game_manager import initial_two, place_two
-
 
 import numpy as np
 import time

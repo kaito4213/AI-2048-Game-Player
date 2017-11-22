@@ -1,13 +1,11 @@
 # The code mainly comes from https://github.com/yangshun/2048-python/blob/master/puzzle.py
+import threading
+import copy
 from tkinter import *
 from logic import *
 from random import *
 from game_manager import *
 from sys import platform
-import reprlib
-import threading
-import copy
-
 from expectimax import expectimax
 from MCTS import naive_random_move
 
@@ -25,7 +23,7 @@ CELL_COLOR_DICT = {2: "#776e65", 4: "#776e65", 8: "#f9f6f2", 16: "#f9f6f2",
                    512: "#f9f6f2", 1024: "#f9f6f2", 2048: "#f9f6f2", 4096: "#f9f53e", 8192:"#f9f6f3",16384:"#f9f6f3"}
 FONT = ("Verdana", 20, "bold")
 
-moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
+MOVES = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 
 class GameGrid(Frame):
     def __init__(self, AI_mode=True, which_AI = 'expectimax'):
@@ -161,7 +159,7 @@ class GameGrid(Frame):
             best_move = None
             best_val = -1
 
-            for direction in moves:
+            for direction in MOVES:
                 if not can_move(self.matrix, direction):
                     # clear()
                     continue
