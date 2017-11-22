@@ -1,11 +1,13 @@
 # The code mainly comes from https://github.com/yangshun/2048-python/blob/master/puzzle.py
 import copy
 import threading
+import numpy as np
 from random import *
 from tkinter import *
 from sys import platform
 from algorithms.MCTS import naive_random_move
 from algorithms.expectimax import expectimax
+from algorithms.minimax import Minimax
 from core.utils import *
 from core.logic import *
 
@@ -26,7 +28,7 @@ FONT = ("Verdana", 20, "bold")
 MOVES = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 
 class GameGrid(Frame):
-    def __init__(self, AI_mode=True, which_AI = 'expectimax'):
+    def __init__(self, AI_mode=True, which_AI = 'minimax'):
         Frame.__init__(self)
         self.actions = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
                          'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
@@ -52,16 +54,20 @@ class GameGrid(Frame):
                 def clipboardcheck():
                     if which_AI.upper() == 'EXPECTIMAX':
                         self.expectimax_AI_run()
-                    elif which_AI == 'MCTS':
+                    elif which_AI.upper() == 'MCTS':
                         self.simple_mcts_AI_run()
+                    elif which_AI.upper() == "MINIMAX":
+                        self.minimax_run()
                 clipboardthread.daemon = True
 
                 clipboardthread().start()
             else:
                 if which_AI.upper() == 'EXPECTIMAX':
                     self.expectimax_AI_run()
-                elif which_AI == 'MCTS':
+                elif which_AI.upper() == 'MCTS':
                     self.simple_mcts_AI_run()
+                elif which_AI.upper() == "MINIMAX":
+                    self.minimax_run()
         self.mainloop()
 
     def init_score(self):
@@ -145,7 +151,7 @@ class GameGrid(Frame):
                 self.score += add_up_v2(self.matrix, action)
                 move(self.matrix, action)
                 self.update_score()
-                # self.update_grid_cells()
+                self.update_grid_cells()
                 simple_add_num(self.matrix)
                 self.update_grid_cells()
                 if check_end(self.matrix):
@@ -178,8 +184,18 @@ class GameGrid(Frame):
             self.score += add_up_v2(self.matrix, best_move)
             move(self.matrix,best_move)
             self.update_score()
-            # self.update_grid_cells()
+            self.update_grid_cells()
             simple_add_num(self.matrix)
             self.update_grid_cells()
 
-
+    def minimax_run(self):
+        while not check_end(self.matrix):
+            mm = Minimax(board= self.matrix, max_depth= 4)
+            best_move = mm.basic_move()
+            move(self.matrix, best_move)
+            self.score +=add_up_v2(self.matrix, best_move)
+            move(self.matrix, best_move)
+            self.update_score()
+            self.update_grid_cells()
+            simple_add_num(self.matrix)
+            self.update_grid_cells()

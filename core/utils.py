@@ -40,6 +40,7 @@ def check_full(board):
 def find_empty_cells(board):
     """
     find all empty cells
+    return a list of empty cells. Use tupe to represent the coordinates in the matrix.
     """
     emptyCells = []
     N = len(board)
