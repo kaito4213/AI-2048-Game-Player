@@ -4,7 +4,6 @@ from logic import *
 from random import *
 from game_manager import *
 from sys import platform
-import keyboard
 import reprlib
 import threading
 import copy
@@ -14,7 +13,7 @@ from MCTS import naive_random_move
 
 SIZE = 500
 GRID_LEN = 4
-GRID_PADDING = 10
+GRID_PADDING = 8
 
 BACKGROUND_COLOR_GAME = "#92877d"
 BACKGROUND_COLOR_CELL_EMPTY = "#9e948a"
@@ -24,7 +23,7 @@ BACKGROUND_COLOR_DICT = {2: "#eee4da", 4: "#ede0c8", 8: "#f2b179", 16: "#f59563"
 CELL_COLOR_DICT = {2: "#776e65", 4: "#776e65", 8: "#f9f6f2", 16: "#f9f6f2",
                    32: "#f9f6f2", 64: "#f9f6f2", 128: "#f9f6f2", 256: "#f9f6f2",
                    512: "#f9f6f2", 1024: "#f9f6f2", 2048: "#f9f6f2", 4096: "#f9f53e", 8192:"#f9f6f3",16384:"#f9f6f3"}
-FONT = ("Verdana", 40, "bold")
+FONT = ("Verdana", 20, "bold")
 
 moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 
@@ -37,9 +36,12 @@ class GameGrid(Frame):
         self.master.title('2048 Player - CS534 Final Project')
         self.master.bind("<Key>", self.key_down)
         self.grid_cells = []
-        self.init_grid()
         self.init_matrix()
+        self.init_grid()
+        self.init_score()
         self.update_grid_cells()
+        self.update_score()
+        self.update_idletasks()
 
         if AI_mode:
             if platform == 'win32' or platform == 'cygwin':
@@ -65,14 +67,26 @@ class GameGrid(Frame):
                     self.simple_mcts_AI_run()
         self.mainloop()
 
+    def init_score(self):
+        footer_label = Frame(self.background, bg=BACKGROUND_COLOR_CELL_EMPTY, width=SIZE/2, height=50)
+        footer_label.grid(row = GRID_LEN, column = 0, columnspan = 2, padx=GRID_PADDING, pady=GRID_PADDING)
+        title_cell = Label(master=footer_label, text="Score:", bg=BACKGROUND_COLOR_DICT[2], justify=CENTER, font=FONT, width=10,
+                  height=2)
+        title_cell.grid()
+        footer_score = Frame(self.background, bg=BACKGROUND_COLOR_CELL_EMPTY, width=SIZE/2, height=50)
+        footer_score.grid(row = GRID_LEN, column = 2, columnspan = 2, padx=GRID_PADDING, pady=GRID_PADDING)
+        self.score_cell = Label(master=footer_score, text=self.score, bg=BACKGROUND_COLOR_DICT[2], justify=CENTER, font=FONT, width=10,
+                  height=2)
+        self.score_cell.grid()
+
 
     def init_grid(self):
-        background = Frame(self, bg=BACKGROUND_COLOR_GAME, width=SIZE, height=SIZE)
-        background.grid()
+        self.background = Frame(self, bg=BACKGROUND_COLOR_GAME, width=SIZE, height=SIZE+50)
+        self.background.grid()
         for i in range(GRID_LEN):
             grid_row = []
             for j in range(GRID_LEN):
-                cell = Frame(background, bg=BACKGROUND_COLOR_CELL_EMPTY, width=SIZE / GRID_LEN, height=SIZE / GRID_LEN)
+                cell = Frame(self.background, bg=BACKGROUND_COLOR_CELL_EMPTY, width=SIZE / GRID_LEN, height=SIZE / GRID_LEN)
                 cell.grid(row=i, column=j, padx=GRID_PADDING, pady=GRID_PADDING)
                 # font = Font(size=FONT_SIZE, family=FONT_FAMILY, weight=FONT_WEIGHT)
                 t = Label(master=cell, text="", bg=BACKGROUND_COLOR_CELL_EMPTY, justify=CENTER, font=FONT, width=4,
@@ -99,7 +113,12 @@ class GameGrid(Frame):
                 else:
                     self.grid_cells[i][j].configure(text=str(new_number), bg=BACKGROUND_COLOR_DICT[new_number],
                                                     fg=CELL_COLOR_DICT[new_number])
-        self.update_idletasks()
+
+
+    def update_score(self):
+        print(self.score)
+        self.score_cell.configure(text=self.score)
+
 
     def key_down(self, event):
         key = repr(event.char).replace("'", "")
@@ -165,4 +184,4 @@ class GameGrid(Frame):
             self.update_grid_cells()
 
 
-gamegrid = GameGrid(AI_mode=True,which_AI='expectimax')
+gamegrid = GameGrid(AI_mode=False,which_AI='expectimax')

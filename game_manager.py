@@ -2,7 +2,7 @@ from utils import *
 from logic import *
 import random
 from sys import platform
-import keyboard
+
 
 
 ACTIONS = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
@@ -97,6 +97,7 @@ def simple_add_num(board):
 
 
 def win32_press():
+    import keyboard
     flag = True
     p = None
     while flag:
