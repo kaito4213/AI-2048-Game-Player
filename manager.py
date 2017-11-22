@@ -74,7 +74,7 @@ def run_console():
 
 
 def run_gui():
-    GameGrid(AI_mode=True, which_AI='expectimax')
+    GameGrid(AI_mode=True, which_AI='minimax')
 
 
 def run(mode = "gui"):

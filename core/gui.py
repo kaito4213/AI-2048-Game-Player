@@ -2,6 +2,7 @@
 import copy
 import threading
 import numpy as np
+import time
 from random import *
 from tkinter import *
 from sys import platform
@@ -10,6 +11,7 @@ from algorithms.expectimax import expectimax
 from algorithms.minimax import Minimax
 from core.utils import *
 from core.logic import *
+
 
 SIZE = 500
 GRID_LEN = 4
@@ -190,7 +192,7 @@ class GameGrid(Frame):
 
     def minimax_run(self):
         while not check_end(self.matrix):
-            mm = Minimax(board= self.matrix, max_depth= 4)
+            mm = Minimax(board= self.matrix, max_depth= 3)
             best_move = mm.basic_move()
             move(self.matrix, best_move)
             self.score +=add_up_v2(self.matrix, best_move)
@@ -199,3 +201,7 @@ class GameGrid(Frame):
             self.update_grid_cells()
             simple_add_num(self.matrix)
             self.update_grid_cells()
+            # time.sleep(0.1)
+            if check_end(self.matrix):
+                self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)

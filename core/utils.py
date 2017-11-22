@@ -1,6 +1,6 @@
 import random
 
-Actions = ("Up", "Down", "Left", "Right")
+Actions = ("UP", "DOWN", "LEFT", "RIGHT")
 
 
 def make_board(N):

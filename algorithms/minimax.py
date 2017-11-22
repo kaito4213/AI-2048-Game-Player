@@ -7,14 +7,15 @@
 
 from core.evaluate_function import MinimaxEvaluator
 import numpy as np
-from core.logic import can_move, check_end, move
+import copy as cp
+from core.logic import can_move, check_end, move, add_up_v2
 from core.utils import Actions, find_empty_cells
 
 class Minimax:
-    def __init__(self, board = None, max_depth = 4, actions = Actions):
+    def __init__(self, board = None, max_depth = 4):
         self.board = board
         self.max_depth = max_depth
-        self.ACTIONS = actions
+        self.ACTIONS = Actions
     def eval(self, board):
         '''
         A evaluation function
@@ -25,7 +26,13 @@ class Minimax:
         mono_weight = 1.0
         empty_weight = 2.7
         max_weight = 1.0
-        return me.smoothness() + me.monotonicity() + np.log(empty_counts) + me.max_val()
+        smooth = me.smoothness()*smooth_weight
+        mono = me.monotonicity() * mono_weight
+        # When no empty cells the while loop should terminate.
+        # So no need to consider it here.
+        emp = np.log(empty_counts) * empty_weight
+        maxwgt = me.max_val() * max_weight
+        return smooth + mono + emp + maxwgt
 
     def basic_move(self):
         '''
@@ -34,17 +41,19 @@ class Minimax:
         '''
         best_move = None
         max_value = -np.inf
-        children = []
         # currently is max player. Facing on 4 directions, you iterate, compare the heuristic,
         # choose the best direction to go.
         for action in self.ACTIONS:
             best_value = -np.inf
-            board_copy = self.board * 1
+            board_copy = cp.deepcopy(self.board)
             if can_move(board_copy, action):
                 move(board_copy, action)
                 best_value = self.basic_run(board_copy, self.max_depth, False)
             if best_value > max_value:
+                max_value = best_value
                 best_move = action
+        if best_move == None:
+            raise ValueError("The best move is None! Check minimax algorithm.")
         return best_move
 
 
@@ -56,20 +65,23 @@ class Minimax:
         if is_max:
             best_value = -np.inf
             for action in self.ACTIONS:
-                board_copy = board * 1
+                board_copy = cp.deepcopy(board)
                 if can_move(board_copy, action):
                     move(board_copy, action)
+                    add_up_v2(board_copy, action)
+                    move(board_copy, action)
                     best_value = max(best_value, self.basic_run(board_copy, max_depth - 1, False))
+
             return best_value
         else:
             best_value = np.inf
             children = []
             empty_cells = find_empty_cells(board)
             for cell in empty_cells:
-                board_copy = board * 1
+                board_copy = cp.deepcopy(board)
                 board_copy[cell[0]][cell[1]] = 2
                 children.append(board_copy)
-                board_copy = board * 1
+                board_copy = cp.deepcopy(board)
                 board_copy[cell[0]][cell[1]] = 4
                 children.append(board_copy)
             for child in children:
