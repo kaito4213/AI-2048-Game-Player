@@ -39,9 +39,8 @@ class GameGrid(Frame):
         self.init_matrix()
         self.init_grid()
         self.init_score()
-        self.update_grid_cells()
         self.update_score()
-        self.update_idletasks()
+        self.update_grid_cells()
 
         if AI_mode:
             if platform == 'win32' or platform == 'cygwin':
@@ -113,10 +112,9 @@ class GameGrid(Frame):
                 else:
                     self.grid_cells[i][j].configure(text=str(new_number), bg=BACKGROUND_COLOR_DICT[new_number],
                                                     fg=CELL_COLOR_DICT[new_number])
-
+        self.update_idletasks()
 
     def update_score(self):
-        print(self.score)
         self.score_cell.configure(text=self.score)
 
 
@@ -126,9 +124,10 @@ class GameGrid(Frame):
             action = self.actions[key]
             if can_move(self.matrix, action):
                 move(self.matrix, action)
-                self.score = add_up(self.matrix, action, self.score)
+                self.score += add_up_v2(self.matrix, action)
                 move(self.matrix, action)
                 simple_add_num(self.matrix)
+                self.update_score()
                 self.update_grid_cells()
                 if check_end(self.matrix):
                     self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
@@ -147,7 +146,8 @@ class GameGrid(Frame):
                 move(self.matrix, action)
                 self.score += add_up_v2(self.matrix, action)
                 move(self.matrix, action)
-                self.update_grid_cells()
+                self.update_score()
+                # self.update_grid_cells()
                 simple_add_num(self.matrix)
                 self.update_grid_cells()
                 if check_end(self.matrix):
@@ -177,11 +177,12 @@ class GameGrid(Frame):
                     best_move = direction
 
             move(self.matrix,best_move)
-            add_up_v2(self.matrix,best_move)
+            self.score += add_up_v2(self.matrix, best_move)
             move(self.matrix,best_move)
-            self.update_grid_cells()
+            self.update_score()
+            # self.update_grid_cells()
             simple_add_num(self.matrix)
             self.update_grid_cells()
 
 
-gamegrid = GameGrid(AI_mode=False,which_AI='expectimax')
+gamegrid = GameGrid(AI_mode=True, which_AI='expectimax')
