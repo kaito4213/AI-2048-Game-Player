@@ -60,6 +60,8 @@ class GameGrid(Frame):
                         self.simple_mcts_AI_run()
                     elif which_AI.upper() == "MINIMAX":
                         self.minimax_run()
+                    elif which_AI.upper() == "MINIMAX_PRUNING":
+                        self.minimax_pruning_run()
                 clipboardthread.daemon = True
 
                 clipboardthread().start()
@@ -70,6 +72,8 @@ class GameGrid(Frame):
                     self.simple_mcts_AI_run()
                 elif which_AI.upper() == "MINIMAX":
                     self.minimax_run()
+                elif which_AI.upper() == "MINIMAX_PRUNING":
+                    self.minimax_pruning_run()
         self.mainloop()
 
     def init_score(self):
@@ -192,8 +196,24 @@ class GameGrid(Frame):
 
     def minimax_run(self):
         while not check_end(self.matrix):
-            mm = Minimax(board= self.matrix, max_depth= 3)
+            mm = Minimax(board= self.matrix, max_depth= 2)
             best_move = mm.basic_move()
+            move(self.matrix, best_move)
+            self.score +=add_up_v2(self.matrix, best_move)
+            move(self.matrix, best_move)
+            self.update_score()
+            self.update_grid_cells()
+            simple_add_num(self.matrix)
+            self.update_grid_cells()
+            # time.sleep(0.1)
+            if check_end(self.matrix):
+                self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
+
+    def minimax_pruning_run(self):
+        while not check_end(self.matrix):
+            mm = Minimax(board= self.matrix, max_depth= 4)
+            best_move = mm.alpha_beta_move()
             move(self.matrix, best_move)
             self.score +=add_up_v2(self.matrix, best_move)
             move(self.matrix, best_move)

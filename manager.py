@@ -126,6 +126,6 @@ def run(mode = "gui", algo = "expectimax"):
         raise ValueError("Unexpect Mode. Choose one from 'gui' or 'console'")
 
 if __name__ == "__main__":
-    run(mode = "gui", algo = "expectimax")
+    run(mode = "gui", algo = "minimax_pruning")
 
 

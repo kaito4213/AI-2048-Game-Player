@@ -25,12 +25,12 @@ class MinimaxEvaluator(Evaluator):
         for i in range(N):
             for j in range(N):
                 if self.board[i][j] != '*':
-                    curr_value = math.log(2,self.board[i][j])
+                    curr_value = math.log(self.board[i][j],2)
                     for direction in ('RIGHT', 'DOWN'):
                         next_num_cell = self.find_first_non_empty_cell(i,j, direction)
                         if next_num_cell != None:
                             x, y = next_num_cell
-                            next_num_value = math.log(2,self.board[x][y])
+                            next_num_value = math.log(self.board[x][y],2)
                             res -= abs(curr_value - next_num_value)
         return res
 
