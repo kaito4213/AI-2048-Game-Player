@@ -30,7 +30,10 @@ class Minimax:
         mono = me.monotonicity() * mono_weight
         # When no empty cells the while loop should terminate.
         # So no need to consider it here.
-        emp = np.log(empty_counts) * empty_weight
+        if(empty_counts == 0):
+            emp = 0
+        else:
+            emp = np.log(empty_counts) * empty_weight
         maxwgt = me.max_val() * max_weight
         return smooth + mono + emp + maxwgt
 
@@ -49,15 +52,14 @@ class Minimax:
             if can_move(board_copy, action):
                 move(board_copy, action)
                 best_value = self.basic_run(board_copy, self.max_depth, False)
+            if action == "RIGHT" or action == "DOWN":
+                best_value += 500
             if best_value > max_value:
                 max_value = best_value
                 best_move = action
         if best_move == None:
             raise ValueError("The best move is None! Check minimax algorithm.")
         return best_move
-
-
-
 
     def basic_run(self, board, max_depth, is_max):
         if (max_depth == 0) or check_end(board):

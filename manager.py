@@ -1,6 +1,10 @@
 from sys import platform
 from core.gui import GameGrid
 from core.logic import *
+from core.utils import Actions
+import copy
+from algorithms.expectimax import expectimax
+
 
 ACTIONS_MAP = {'w': 'UP', 'W': 'UP', 's': 'DOWN', 'S': 'DOWN',
            'a': 'LEFT', 'A': 'LEFT', 'd': 'RIGHT', 'D': 'RIGHT'}
@@ -73,19 +77,55 @@ def run_console():
     print("/nGame end/nTo run this game, type run_keyboard()")
 
 
-def run_gui():
-    GameGrid(AI_mode=True, which_AI='minimax')
+def run_gui(algo):
+    GameGrid(AI_mode=True, which_AI=algo)
 
 
-def run(mode = "gui"):
+def run(mode = "gui", algo = "expectimax"):
     if mode == "gui":
-        run_gui()
+        run_gui(algo = algo)
     elif mode == "console":
         run_console()
+    elif mode == "score":
+        # This part is put here just for test visualizer.
+        # Should be encapsulated in the future.
+        if algo == "expectimax":
+            board = make_board(4)
+            initial_two(board)
+            curr_score = 0
+            while not check_end(board):
+                depth = 2
+                best_move = None
+                best_val = -1
+
+                for direction in Actions:
+                    if not can_move(board, direction):
+                        # clear()
+                        continue
+
+                    temp_board = copy.deepcopy(board)
+                    move(temp_board, direction)
+                    add_up(temp_board, direction, 0)
+                    move(temp_board, direction)
+
+                    alpha = expectimax(temp_board, depth)
+                    if best_val < alpha:
+                        best_val = alpha
+                        best_move = direction
+
+                move(board,best_move)
+                curr_score += add_up_v2(board, best_move)
+                move(board,best_move)
+                simple_add_num(board)
+            max_cell = find_max_cell(board)
+            return curr_score, max_cell
+        else:
+            raise ValueError("No such algorithm: {}".format(algo))
+
     else:
         raise ValueError("Unexpect Mode. Choose one from 'gui' or 'console'")
 
 if __name__ == "__main__":
-    run(mode = "gui")
+    run(mode = "gui", algo = "expectimax")
 
 
