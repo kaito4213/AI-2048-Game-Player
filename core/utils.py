@@ -185,8 +185,8 @@ def place_two(board):
     """
     N = len(board)
     random_generate_2 = random.randint(0,10)
-    # generate a new number of 2 with possibily of 50%
-    if random_generate_2 < 5:
+    # generate a new number of 2 with possibily of 90%
+    if random_generate_2 < 9:
         x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
         times = 0
         while times < 10 and board[x1][y1] != '*':
@@ -197,8 +197,8 @@ def place_two(board):
             board[x1][y1] = 2
 
     random_generate_4 = random.randint(0, 10)
-    # generate a new number of 2 with possibily of 30%
-    if random_generate_4 < 3:
+    # generate a new number of 2 with possibily of 10%
+    if random_generate_4 < 1:
         times = 0
         x1, y1 = random.randint(0,N-1), random.randint(0,N-1)
         while times < 3 and board[x1][y1] != '*':

@@ -2,12 +2,72 @@
 # May be used in different heuristic functions
 
 import math
-
+import copy
+from core.logic import add_up
+from core.utils import find_empty_cells
 
 class Evaluator:
     def __init__(self, board):
         self.board = board
 
+    def emptiness(self, new_board):
+        """
+        measure how empty the board is
+        simply return the number of empty board
+        """
+        N = len(new_board)
+
+        count = 0
+        for i in range(N):
+            for j in range(N):
+                if new_board[i][j] == '*':
+                    count += 1
+        return count
+
+    def maximum_merge_cells(self):
+        moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
+        empty_cells_before_merge = self.emptiness(self.board)
+        max_merge = 0
+        for move in moves:
+            new_board = copy.deepcopy(self.board)
+            add_up(new_board, move, 0)
+            empty_cells_after_merge = self.emptiness(new_board)
+            merge = empty_cells_after_merge - empty_cells_before_merge
+            if merge > max_merge:
+                max_merge = merge
+
+        return max_merge
+
+    def decreasement(self):
+        #count decreasement pair in snake-shaped  board
+        count_pair = 0
+        new_board = copy.deepcopy(self.board)
+        empty = find_empty_cells(new_board)
+        for index in empty:
+            new_board[index[0]][index[1]] = 0
+
+        for i in range(len(new_board[0]) - 1):
+            if new_board[0][i] > new_board[0][i+1]:
+                count_pair += 1
+            if new_board[2][i] > new_board[2][i+1]:
+                count_pair += 1
+
+        for i in range(len(new_board[0]) - 1):
+            if new_board[1][i] < new_board[1][i+1]:
+                count_pair += 1
+            if new_board[3][i] < new_board[3][i+1]:
+                count_pair += 1
+
+        if new_board[0][3] > new_board[1][3]:
+            count_pair += 1
+
+        if new_board[1][0] > new_board[2][0]:
+            count_pair += 1
+
+        if new_board[2][3] > new_board[3][3]:
+            count_pair += 1
+
+        return count_pair
 
 class MinimaxEvaluator(Evaluator):
     def __init__(self, board):
