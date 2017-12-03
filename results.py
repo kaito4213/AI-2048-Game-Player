@@ -11,23 +11,30 @@ import copy
 # 'monte_carlo_simulation'
 # simulates XX steps for each move
 # {'max_tile':occur_times}
+# {max scores}
 # {'total_score': occur_times}
 # average_moves to end of game
 
 
-def get_results_mcts(which_algorithm = 'mcts', test_times = 20):
+def get_results_mcts(which_algorithm = 'mcts', test_times = 100):
     res = []
-    max_tiles = {}
+
     total_score = {}
-    average_moves = 0
-    for i in range(test_times):
-        board = make_board(4)
-        initial_two(board)
-        curr_score = 0
-        number_of_moves = 0
-        while not check_end(board):
+    sim_moves = (50,100,200,400,800)
+    max_total_scores = {}
+    for sim_move in sim_moves:
+
+        max_tiles = {}
+        max_total_score = 0
+        average_moves = 0
+        for i in range(test_times):
+            board = make_board(4)
+            initial_two(board)
+            curr_score = 0
+            number_of_moves = 0
+
             while not check_end(board):
-                action, successBoards = naive_random_move(board, curr_score, test_moves=1)
+                action, successBoards = naive_random_move(board, curr_score, test_moves=sim_move)
                 if can_move(board, action):
                     number_of_moves += 1
 
@@ -46,13 +53,23 @@ def get_results_mcts(which_algorithm = 'mcts', test_times = 20):
                 total_score[curr_score] = 1
             else:
                 total_score[curr_score] += 1
-        average_moves += number_of_moves
 
-    res.append(which_algorithm)
-    res.append(max_tiles)
-    # res.append(total_score)
-    res.append('average_moves_till_end: {}'.format(average_moves/test_times))
+            if max_total_score < curr_score:
+                max_total_score = curr_score
 
+            average_moves += number_of_moves
+
+        max_total_scores[sim_move] = max_total_score
+
+        res.append(which_algorithm + ' with sim_move {}'.format(sim_move))
+        res.append(max_tiles)
+        # res.append(total_score)
+        # res.append(max_total_scores)
+        res.append('Max_score is {}'.format(max_total_score))
+        res.append('average_moves_till_end: {}'.format(average_moves/test_times))
+        res.append('\n')
+
+    res.append(max_total_scores)
     with open('results_{}.txt'.format(which_algorithm), mode='wt', encoding='utf-8') as out:
         for e in res:
             out.write(str(e))
@@ -64,11 +81,15 @@ def get_results_expectimax(which_algorithm = 'expectimax', test_times = 3):
     moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 
     res = []
-    max_tiles = {}
+
     total_score = {}
-    average_moves = 0
+
 
     for depth in (1,2):
+
+        max_total_score = 0
+        max_tiles = {}
+        average_moves = 0
         for i in range(test_times):
             board = make_board(4)
             initial_two(board)
@@ -112,12 +133,16 @@ def get_results_expectimax(which_algorithm = 'expectimax', test_times = 3):
                 total_score[curr_score] = 1
             else:
                 total_score[curr_score] += 1
+            if max_total_score < curr_score:
+                max_total_score = curr_score
             average_moves += number_of_moves
 
-        res.append(which_algorithm + str(depth))
+        res.append(which_algorithm + ' with depth {}'.format(depth))
         res.append(max_tiles)
+        res.append('max score for this depth is {}'.format(max_total_score))
     # res.append(total_score)
         res.append('average_moves_till_end: {}'.format(average_moves/test_times))
+        res.append('\n')
 
     with open('results_{}.txt'.format(which_algorithm), mode='wt', encoding='utf-8') as out:
         for e in res:
@@ -126,5 +151,4 @@ def get_results_expectimax(which_algorithm = 'expectimax', test_times = 3):
 
     return res
 
-
-get_results_expectimax()
+# get_results_expectimax()
