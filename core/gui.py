@@ -160,9 +160,9 @@ class GameGrid(Frame):
                 self.update_grid_cells()
                 simple_add_num(self.matrix)
                 self.update_grid_cells()
-                if check_end(self.matrix):
-                    self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
-                    self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                # if check_end(self.matrix):
+                #     self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                #     self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
 
     def expectimax_AI_run(self):
         while not check_end(self.matrix):
@@ -198,30 +198,32 @@ class GameGrid(Frame):
         while not check_end(self.matrix):
             mm = Minimax(board= self.matrix, max_depth= 2)
             best_move = mm.basic_move()
-            move(self.matrix, best_move)
-            self.score +=add_up_v2(self.matrix, best_move)
-            move(self.matrix, best_move)
-            self.update_score()
-            self.update_grid_cells()
-            simple_add_num(self.matrix)
-            self.update_grid_cells()
-            # time.sleep(0.1)
-            if check_end(self.matrix):
-                self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
-                self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
+            if can_move(self.matrix, best_move):
+                move(self.matrix, best_move)
+                self.score +=add_up_v2(self.matrix, best_move)
+                move(self.matrix, best_move)
+                self.update_score()
+                self.update_grid_cells()
+                simple_add_num(self.matrix)
+                self.update_grid_cells()
+                # time.sleep(0.1)
+                # if check_end(self.matrix):
+                #     self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                #     self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
 
     def minimax_pruning_run(self):
         while not check_end(self.matrix):
             mm = Minimax(board= self.matrix, max_depth= 4)
             best_move = mm.alpha_beta_move()
-            move(self.matrix, best_move)
-            self.score +=add_up_v2(self.matrix, best_move)
-            move(self.matrix, best_move)
-            self.update_score()
-            self.update_grid_cells()
-            simple_add_num(self.matrix)
-            self.update_grid_cells()
-            # time.sleep(0.1)
-            if check_end(self.matrix):
-                self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
-                self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
+            if can_move(self.matrix, best_move):
+                move(self.matrix, best_move)
+                self.score +=add_up_v2(self.matrix, best_move)
+                move(self.matrix, best_move)
+                self.update_score()
+                self.update_grid_cells()
+                simple_add_num(self.matrix)
+                self.update_grid_cells()
+                # time.sleep(0.1)
+                # if check_end(self.matrix):
+                    # self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                    # self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
