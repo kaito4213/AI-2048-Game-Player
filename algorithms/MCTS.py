@@ -58,7 +58,7 @@ def naive_random_move(board, curr_score, test_moves=100):
             # scores[i] = scores[i] / run_times
                 if find_max_cell(test_board) > 4096:
                     successBoards.append(test_board)
-            print("avg run times :", total_runs / test_moves)
+            # print("avg run times :", total_runs / test_moves)
             scores[i] += total_add_score / total_runs
 
     if max(scores) == curr_score:
