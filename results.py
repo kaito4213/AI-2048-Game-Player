@@ -187,6 +187,7 @@ def get_results_minimax(which_algorithm='minimax', test_times=2):
                     move(board,best_move)
                     curr_score += add_up_v2(board,best_move)
                     move(board,best_move)
+                    simple_add_num(board)
 
             max_tile = find_max_cell(board)
             if max_tile not in max_tiles:
@@ -200,6 +201,9 @@ def get_results_minimax(which_algorithm='minimax', test_times=2):
             if max_total_score < curr_score:
                 max_total_score = curr_score
             average_moves += number_of_moves
+
+            # debug output
+            print("Finish {} iteration in depth {}".format(i, depth))
 
         res.append(which_algorithm + ' with depth {}'.format(depth))
         res.append(max_tiles)
