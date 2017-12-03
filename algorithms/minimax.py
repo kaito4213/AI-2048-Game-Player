@@ -49,18 +49,21 @@ class Minimax:
         # currently is max player. Facing on 4 directions, you iterate, compare the heuristic,
         # choose the best direction to go.
         for action in self.ACTIONS:
-            best_value = -np.inf
+            # best_value = -np.inf
             board_copy = cp.deepcopy(self.board)
             if can_move(board_copy, action):
+                move(board_copy, action)
+                add_up_v2(board_copy,action)
                 move(board_copy, action)
                 best_value = self.basic_run(board_copy, self.max_depth, False)
             # if action == "RIGHT" or action == "DOWN":
             #     best_value += 500
-            if best_value > max_value:
-                max_value = best_value
-                best_move = action
+                if best_value > max_value:
+                    max_value = best_value
+                    best_move = action
         if best_move == None:
-            raise ValueError("The best move is None! Check minimax algorithm.")
+            # raise ValueError("The best move is None! Check minimax algorithm.")
+            return self.ACTIONS[np.random.randint(0,3)]
         return best_move
 
     def basic_run(self, board, max_depth, is_max):
@@ -112,6 +115,8 @@ class Minimax:
             board_copy = cp.deepcopy(self.board)
             if can_move(board_copy, action):
                 move(board_copy, action)
+                add_up_v2(board_copy,action)
+                move(board_copy,action)
                 best_value = self.alpha_beta_run(board_copy, self.max_depth, -np.inf, np.inf, False)
             # if action == "RIGHT" or action == "DOWN":
             #     best_value += 500
