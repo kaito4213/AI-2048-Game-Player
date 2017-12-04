@@ -229,3 +229,21 @@ def simple_add_num(board):
         board[row][col] = 2
     else:
         board[row][col] = 4
+
+def tile_count(board):
+    """
+    count how many times each tile occurs
+    board must be full
+    """
+    N = len(board)
+
+    res = {}
+
+    for i in range(N):
+        for j in range(N):
+            if board[i][j] in res:
+                res[board[i][j]] += 1
+            else:
+                res[board[i][j]] = 1
+
+    return res
