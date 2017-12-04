@@ -1,0 +1,7 @@
+mcts with sim_move 100
+{1024: 6, 2048: 13, 512: 1}
+Max_score is 36148
+average_moves_till_end: 1232.95
+
+
+{100: 36148}

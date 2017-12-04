@@ -1,9 +1,10 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import random
 import plotly.plotly as py
 import plotly.graph_objs as go
-from core.gui import CELL_COLOR_DICT
+from core.gui import BACKGROUND_COLOR_DICT
+import colorlover as cl
+import math
 
 def test_generator(n):
     '''
@@ -20,9 +21,23 @@ def test_generator(n):
         temp = {}
         for j in ["movements", "score", "depth"]:
             temp[j] = random.randint(1,1000)
-        temp["max_tile"] = random.choice(list(CELL_COLOR_DICT.keys()))
+        temp["max_tile"] = random.choice(list(BACKGROUND_COLOR_DICT.keys()))
         lst.append(temp)
     return lst
+
+
+def dict_txt_parser(path):
+    import ast
+    import json
+    lst = []
+    with open(path, 'r') as f:
+        s = f.readlines()
+        for line in s:
+            whip = ast.literal_eval(line)
+            lst.append(whip)
+    print("The length of data is {}".format(len(lst)))
+    return lst
+
 
 class Visualizer:
     def __init__(self, x_range = np.arange(1, 50)):
@@ -121,7 +136,7 @@ class Visualizer:
     def draw_stack_bar(self, key):
         count_matrix = []
         data_of_key, labels = self.get_value_by_key(key)
-        all_uniques_cells = sorted(list(CELL_COLOR_DICT.keys()))
+        all_uniques_cells = sorted(list(BACKGROUND_COLOR_DICT.keys()))
         for i in range(len(data_of_key)):
             uniques, counts = np.unique(data_of_key[i], return_counts= True)
             temp = []
@@ -129,24 +144,34 @@ class Visualizer:
             # sum_counts = np.sum(counts)
             # counts = counts/sum_counts
             i = 0
+            print(uniques, all_uniques_cells)
             for j in all_uniques_cells:
-                if j != uniques[i]:
+                if i >= len(uniques):
                     temp.append(0)
-                else:
+                elif j == uniques[i]:
                     temp.append(counts[i])
                     i += 1
+                else:
+                    temp.append(0)
+
             count_matrix.append(temp)
         np_matrix = np.array(count_matrix)
         np_matrix = np_matrix.T
+        bupu = cl.scales['9']['seq']['YlOrBr']
+        bupux = cl.interp(bupu, 100)
+        gap = math.floor(100/len(np_matrix))
         stacked_data = []
         for i in range(len(np_matrix)):
             trace0 = go.Bar(
                 x = labels,
                 y = np_matrix[i],
                 name = all_uniques_cells[i],
-                # marker = dict(
-                #     color = CELL_COLOR_DICT[all_uniques_cells[i]]
-                # )
+                marker = dict(
+                    # cmax=len(np_matrix),
+                    # cmin=0,
+                    # colorscale='Viridis',
+                    color = bupux[gap * i]
+                )
             )
             stacked_data.append(trace0)
 
