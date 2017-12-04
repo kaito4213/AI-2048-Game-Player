@@ -18,11 +18,13 @@ import copy
 # average_moves to end of game
 
 
-def get_results_mcts(which_algorithm = 'mcts', test_times = 5):
-    res = []
+def get_results_mcts(which_algorithm = 'mcts', test_times = 5, sim_moves = (50,100,200,400,800)):
+
+    res_all = []
+    res_single = []
 
     total_score = {}
-    sim_moves = (50,100,200,400,800)
+
     max_total_scores = {}
     for sim_move in sim_moves:
 
@@ -34,6 +36,7 @@ def get_results_mcts(which_algorithm = 'mcts', test_times = 5):
             initial_two(board)
             curr_score = 0
             number_of_moves = 0
+            board_info = {}
 
             while not check_end(board):
                 action, successBoards = naive_random_move(board, curr_score, test_moves=sim_move)
@@ -46,6 +49,14 @@ def get_results_mcts(which_algorithm = 'mcts', test_times = 5):
                     simple_add_num(board)
 
             max_tile = find_max_cell(board)
+            tile_counts = tile_count(board)
+
+            board_info['movements'] = number_of_moves
+            board_info['score'] = curr_score
+            board_info['max_tile'] = max_tile
+            board_info['depth'] = sim_move
+            board_info['tile_count'] = tile_counts
+            res_single.append(board_info)
 
             if max_tile not in max_tiles:
                 max_tiles[max_tile] = 1
@@ -66,31 +77,37 @@ def get_results_mcts(which_algorithm = 'mcts', test_times = 5):
 
         max_total_scores[sim_move] = max_total_score
 
-        res.append(which_algorithm + ' with sim_move {}'.format(sim_move))
-        res.append(max_tiles)
-        # res.append(total_score)
-        # res.append(max_total_scores)
-        res.append('Max_score is {}'.format(max_total_score))
-        res.append('average_moves_till_end: {}'.format(average_moves/test_times))
-        res.append('\n')
+        res_all.append(which_algorithm + ' with sim_move {}'.format(sim_move))
+        res_all.append(max_tiles)
+        # res_all.append(total_score)
+        # res_all.append(max_total_scores)
+        res_all.append('Max_score is {}'.format(max_total_score))
+        res_all.append('average_moves_till_end: {}'.format(average_moves/test_times))
+        res_all.append('\n')
 
-    res.append(max_total_scores)
-    with open('results_{}.txt'.format(which_algorithm), mode='wt', encoding='utf-8') as out:
-        for e in res:
+    res_all.append(max_total_scores)
+    with open('results_{}_{}_{}.txt'.format(which_algorithm, 'total_count', str(sim_moves)), mode='wt', encoding='utf-8') as out:
+        for e in res_all:
             out.write(str(e))
             out.write('\n')
 
-    return res
+    with open('results_{}_{}_{}.txt'.format(which_algorithm, 'single_count', str(sim_moves)), mode='wt', encoding='utf-8') as out:
+        for e in res_single:
+            out.write(str(e))
+            out.write('\n')
 
-def get_results_expectimax(which_algorithm = 'expectimax', test_times = 20):
+    return res_all, res_single
+
+def get_results_expectimax(which_algorithm = 'expectimax', test_times = 20, max_depth=(1,2)):
     moves = ('UP', 'DOWN', 'LEFT', 'RIGHT')
 
-    res = []
+    res_all = []
+    res_single = []
 
     total_score = {}
 
 
-    for depth in (1,2):
+    for depth in max_depth:
 
         max_total_score = 0
         max_tiles = {}
@@ -100,6 +117,7 @@ def get_results_expectimax(which_algorithm = 'expectimax', test_times = 20):
             initial_two(board)
             curr_score = 0
             number_of_moves = 0
+            board_info = {}
 
             # depth = 1
 
@@ -129,6 +147,14 @@ def get_results_expectimax(which_algorithm = 'expectimax', test_times = 20):
                 simple_add_num(board)
 
             max_tile = find_max_cell(board)
+            tile_counts = tile_count(board)
+
+            board_info['movements'] = number_of_moves
+            board_info['score'] = curr_score
+            board_info['max_tile'] = max_tile
+            board_info['depth'] = depth
+            board_info['tile_count'] = tile_counts
+            res_single.append(board_info)
 
             if max_tile not in max_tiles:
                 max_tiles[max_tile] = 1
@@ -145,28 +171,34 @@ def get_results_expectimax(which_algorithm = 'expectimax', test_times = 20):
             # debug output
             print("Finish {} iteration in depth {}".format(i, depth))
 
-        res.append(which_algorithm + ' with depth {}'.format(depth))
-        res.append(max_tiles)
-        res.append('max score for this depth is {}'.format(max_total_score))
-    # res.append(total_score)
-        res.append('average_moves_till_end: {}'.format(average_moves/test_times))
-        res.append('\n')
+        res_all.append(which_algorithm + ' with depth {}'.format(depth))
+        res_all.append(max_tiles)
+        res_all.append('max score for this depth is {}'.format(max_total_score))
+    # res_all.append(total_score)
+        res_all.append('average_moves_till_end: {}'.format(average_moves/test_times))
+        res_all.append('\n')
 
-    with open('results_{}.txt'.format(which_algorithm), mode='wt', encoding='utf-8') as out:
-        for e in res:
+    with open('results_{}_{}_{}.txt'.format(which_algorithm, 'total_count', str(max_depth)), mode='wt', encoding='utf-8') as out:
+        for e in res_all:
             out.write(str(e))
             out.write('\n')
 
-    return res
+    with open('results_{}_{}_{}.txt'.format(which_algorithm, 'single_count', str(max_depth)), mode='wt', encoding='utf-8') as out:
+        for e in res_single:
+            out.write(str(e))
+            out.write('\n')
 
-def get_results_minimax(which_algorithm='minimax', test_times=2):
+    return res_all, res_single
 
-    res = []
+def get_results_minimax(which_algorithm='minimax', test_times=20, max_depth = (1,2,3,4)):
+
+    res_all = []
+    res_single = []
+
     total_score = {}
 
-    max_depths = (2,3,4,5,6,7,8,9,10,11,12,13,14)
 
-    for depth in max_depths:
+    for depth in max_depth:
 
         max_tiles = {}
         average_moves = 0
@@ -177,6 +209,7 @@ def get_results_minimax(which_algorithm='minimax', test_times=2):
             initial_two(board)
             curr_score = 0
             number_of_moves = 0
+            board_info = {}
 
             player = Minimax(board, depth)
 
@@ -190,6 +223,15 @@ def get_results_minimax(which_algorithm='minimax', test_times=2):
                     simple_add_num(board)
 
             max_tile = find_max_cell(board)
+            tile_counts = tile_count(board)
+
+            board_info['movements'] = number_of_moves
+            board_info['score'] = curr_score
+            board_info['max_tile'] = max_tile
+            board_info['depth'] = depth
+            board_info['tile_count'] = tile_counts
+            res_single.append(board_info)
+
             if max_tile not in max_tiles:
                 max_tiles[max_tile] = 1
             else:
@@ -205,18 +247,23 @@ def get_results_minimax(which_algorithm='minimax', test_times=2):
             # debug output
             print("Finish {} iteration in depth {}".format(i, depth))
 
-        res.append(which_algorithm + ' with depth {}'.format(depth))
-        res.append(max_tiles)
-        res.append('max score for this depth is {}'.format(max_total_score))
-        res.append('average_moves_till_end: {}'.format(average_moves / test_times))
-        res.append('\n')
+        res_all.append(which_algorithm + ' with depth {}'.format(depth))
+        res_all.append(max_tiles)
+        res_all.append('max score for this depth is {}'.format(max_total_score))
+        res_all.append('average_moves_till_end: {}'.format(average_moves / test_times))
+        res_all.append('\n')
 
-    with open('results_{}.txt'.format(which_algorithm), mode='wt', encoding='utf-8') as out:
-        for e in res:
+    with open('results_{}_{}_{}.txt'.format(which_algorithm, 'total_count', str(max_depth)), mode='wt', encoding='utf-8') as out:
+        for e in res_all:
             out.write(str(e))
             out.write('\n')
 
-    return res
+    with open('results_{}_{}_{}.txt'.format(which_algorithm, 'single_count', str(max_depth)), mode='wt', encoding='utf-8') as out:
+        for e in res_single:
+            out.write(str(e))
+            out.write('\n')
+
+    return res_all, res_single
 
 
 
@@ -228,3 +275,5 @@ def get_results_minimax(which_algorithm='minimax', test_times=2):
 #  "score": 111,
 # "max_tile": 2048,
     # "depth": 2}
+
+get_results_expectimax(max_depth=(1,2),test_times=5)
