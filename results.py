@@ -227,4 +227,4 @@ def get_results_minimax(which_algorithm='minimax', test_times=2):
 #{"movements: 1111,
 #  "score": 111,
 # "max_tile": 2048,
-# "large_tiles": {8192: 0, 4096: 0, 2048: 1, 1024: 0, 512: 1, 256: 1, 128: 0}
+    # "depth": 2}
