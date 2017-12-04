@@ -267,13 +267,98 @@ def get_results_minimax(which_algorithm='minimax', test_times=20, max_depth = (1
 
 
 
-# get_results_expectimax()
+def get_results_minimax_pruning(which_algorithm='minimax_pruning', test_times=20, max_depth = (1,2,3,4)):
+
+    res_all = []
+    res_single = []
+
+    total_score = {}
+
+
+    for depth in max_depth:
+
+        max_tiles = {}
+        average_moves = 0
+        max_total_score = 0
+
+        for i in range(test_times):
+            board = make_board(4)
+            initial_two(board)
+            curr_score = 0
+            number_of_moves = 0
+            board_info = {}
+
+            player = Minimax(board, depth)
+
+            while not check_end(board):
+                best_move = player.alpha_beta_move()
+                if can_move(board, best_move):
+                    number_of_moves += 1
+                    move(board,best_move)
+                    curr_score += add_up_v2(board,best_move)
+                    move(board,best_move)
+                    simple_add_num(board)
+
+            max_tile = find_max_cell(board)
+            tile_counts = tile_count(board)
+
+            board_info['movements'] = number_of_moves
+            board_info['score'] = curr_score
+            board_info['max_tile'] = max_tile
+            board_info['depth'] = depth
+            board_info['tile_count'] = tile_counts
+            res_single.append(board_info)
+
+            if max_tile not in max_tiles:
+                max_tiles[max_tile] = 1
+            else:
+                max_tiles[max_tile] += 1
+            if curr_score not in total_score:
+                total_score[curr_score] = 1
+            else:
+                total_score[curr_score] += 1
+            if max_total_score < curr_score:
+                max_total_score = curr_score
+            average_moves += number_of_moves
+
+            # debug output
+            print("Finish {} iteration in depth {}".format(i, depth))
+
+        res_all.append(which_algorithm + ' with depth {}'.format(depth))
+        res_all.append(max_tiles)
+        res_all.append('max score for this depth is {}'.format(max_total_score))
+        res_all.append('average_moves_till_end: {}'.format(average_moves / test_times))
+        res_all.append('\n')
+
+    with open('results_{}_{}_{}.txt'.format(which_algorithm, 'total_count', str(max_depth)), mode='wt', encoding='utf-8') as out:
+        for e in res_all:
+            out.write(str(e))
+            out.write('\n')
+
+    with open('results_{}_{}_{}.txt'.format(which_algorithm, 'single_count', str(max_depth)), mode='wt', encoding='utf-8') as out:
+        for e in res_single:
+            out.write(str(e))
+            out.write('\n')
+
+    return res_all, res_single
 
 
 ## For each element, we generate a dictionary.
 #{"movements: 1111,
 #  "score": 111,
 # "max_tile": 2048,
-    # "depth": 2}
+#  "depth": 2}
 
-get_results_expectimax(max_depth=(1,2),test_times=5)
+def get_mcts():
+    get_results_mcts(sim_moves=(50,100,200,400),test_times=20)
+
+def get_expectimax():
+    get_results_expectimax(test_times=100,max_depth=(1,2))
+
+def get_minimax():
+    get_results_minimax(test_times=100, max_depth=(1,2))
+    get_results_minimax(test_times=50, max_depth=(3,4))
+
+def get_minimax_pruning():
+    get_results_minimax_pruning(test_times=100, max_depth=(1,2,3,4,5))
+    get_results_minimax_pruning(test_times=50, max_depth=(6,7,8))
