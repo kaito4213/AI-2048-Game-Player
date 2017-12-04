@@ -35,37 +35,21 @@ def initialization():
 
     return values
 
-def reward(state1, state2):
-    """
-        immediate reward for each state
-        earn 10 for any new empty cell
-        earn 10 for any merge
-        earn 50 for increament of decreasing pairs
-    """
-    empty_cell = 10
-    merge_cell = 30
-    increase_pair = 100
-
-    score = increase_pair*(state2[0] - state1[0]) \
-            + empty_cell*(state2[1] - state1[1])\
-            + merge_cell*(state2[2] - state1[2])
-
-    return score
-
-def get_Q(actions, Q, state1, state2):
+def get_Q(board, length, direction, Q, state2):
     """
        values will contain the discounted sum of the rewards to be earned (on average)
     """
-    if len(actions) == 0:
+    if length == 0:
         return 0
 
-    p = 1/len(actions)
+    p = 1/length
     gamma = 0.9
-    Q_value = p * (reward(state1, state2) + gamma * Q[state2])
+    reward = add_up(board, direction, 0)
+    Q_value = p * (reward + gamma * Q[state2])
     return Q_value
 
-def update_Q_value(actions, Q, state1, state2):
-    Q[state1] = get_Q(actions, Q, state1, state2)
+def update_Q_value(board, length, direction, Q, state1, state2):
+    Q[state1] = get_Q(board, length, direction, Q, state2)
 
 def get_state(board):
     state_list = []
@@ -100,7 +84,7 @@ def training(Q):
             add_up(tmp_board, direction, 0)
             move(tmp_board, direction)
             new_state = get_state(board)
-            Q_value = get_Q(actions, Q, old_state, new_state)
+            Q_value = get_Q(tmp_board, len(actions), direction, Q, new_state)
             if Q_value >= max_Q:
                 max_Q = Q_value
                 next_move = direction
@@ -112,22 +96,29 @@ def training(Q):
         move(board, next_move)
         #print('after', board)
         new_state = get_state(board)
-        update_Q_value(actions, Q, old_state, new_state)
+        update_Q_value(board, len(actions), next_move, Q, old_state, new_state)
         simple_add_num(board)
 
-    print(find_max_cell(board))
+    return find_max_cell(board)
 
 def run_Qlearning():
     Q = initialization()
-    iteration = 10000
+    iteration = 3000
 
     while(iteration > 0):
         training(Q)
         iteration -= 1
 
-    print(Q)
     #test by using current Q
-    training(Q)
+    max_cells = training(Q)
+    return max_cells
+
 
 if __name__ == "__main__":
-    run_Qlearning()
+    result = []
+    for i in range(100):
+        value = run_Qlearning()
+        result.append(value)
+        print(value)
+
+    print(result)
