@@ -1,5 +1,6 @@
 .DS_Store
 __pycache__
-.idea
+.idea/*
+.idea/workspace.xml
+.idea/misc.xml
 /core/__pycache__
-.ipynb_checkpoints
