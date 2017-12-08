@@ -20,15 +20,15 @@ Logic:
 ### comparison of different algorithms
 
 Movements for all algorithms
-![Movements-for-all-algos](/outputs/images/Movements-for-all-algos.PNG)
+![img](/blob/master/outputs/images/Movements-for-all-algos.PNG)
 
 
 Maxtile Count for All Algorithms
-![Maxtile-Count-for-All-Algorithms](/outputs/images/Maxtile-Count-for-All-Algorithms.PNG)
+![img](/blob/master/outputs/images/Maxtile-Count-for-All-Algorithms.PNG)
 
 
 Average and Best Score for All Algorithms
-![Average-and-Best-Score-for-All-Algorithms](/outputs/images/Average-and-Best-Score-for-All-Algorithms.PNG)
+![img](/blob/master/outputs/images/Average-and-Best-Score-for-All-Algorithms.png)
 
 run by gui:
 
