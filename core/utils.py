@@ -1,4 +1,5 @@
 import random
+import copy as cp
 
 Actions = ("UP", "DOWN", "LEFT", "RIGHT")
 
@@ -247,3 +248,13 @@ def tile_count(board):
                 res[board[i][j]] = 1
 
     return res
+
+
+def replace_star(board):
+    N = len(board)
+    new_board = cp.deepcopy(board)
+    for i in range(N):
+        for j in range(N):
+            if new_board[i][j] =="*":
+                new_board[i][j] = 0
+    return new_board

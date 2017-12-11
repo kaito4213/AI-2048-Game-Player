@@ -196,7 +196,7 @@ class GameGrid(Frame):
 
     def minimax_run(self):
         while not check_end(self.matrix):
-            mm = Minimax(board= self.matrix, max_depth= 2)
+            mm = Minimax(board= self.matrix, max_depth= 5)
             best_move = mm.basic_move()
             if can_move(self.matrix, best_move):
                 move(self.matrix, best_move)
@@ -227,3 +227,16 @@ class GameGrid(Frame):
                 # if check_end(self.matrix):
                     # self.grid_cells[1][1].configure(text="Game", bg=BACKGROUND_COLOR_CELL_EMPTY)
                     # self.grid_cells[1][2].configure(text="Over!", bg=BACKGROUND_COLOR_CELL_EMPTY)
+
+    # def neural_netword_run(self):
+    #     while not check_end(self.matrix):
+    #         nn = NeuralNetwork(board= self.matrix)
+    #         best_move = nn.alpha_beta_move()
+    #         if can_move(self.matrix, best_move):
+    #             move(self.matrix, best_move)
+    #             self.score +=add_up_v2(self.matrix, best_move)
+    #             move(self.matrix, best_move)
+    #             self.update_score()
+    #             self.update_grid_cells()
+    #             simple_add_num(self.matrix)
+    #             self.update_grid_cells()
