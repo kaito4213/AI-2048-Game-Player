@@ -1,0 +1,12 @@
+expectimax with depth 1
+{256: 10, 512: 14, 128: 1, 1024: 41, 2048: 34}
+max score for this depth is 37900
+average_moves_till_end: 961.8
+
+
+expectimax with depth 2
+{1024: 14, 2048: 50, 256: 1, 4096: 33, 512: 2}
+max score for this depth is 80332
+average_moves_till_end: 1900.94
+
+

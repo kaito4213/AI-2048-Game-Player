@@ -1,0 +1,12 @@
+minimax with depth 1
+{512: 28, 256: 54, 128: 16, 1024: 2}
+max score for this depth is 10484
+average_moves_till_end: 327.52
+
+
+minimax with depth 2
+{128: 1, 512: 41, 256: 5, 1024: 46, 2048: 7}
+max score for this depth is 31828
+average_moves_till_end: 688.56
+
+

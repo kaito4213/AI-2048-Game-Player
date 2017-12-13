@@ -1,6 +1,9 @@
 # 2048-Game-Play
-Autonomous Player to Maximize the Performance in 2048 Tile Game Group
-2048 Game
+### Abstract
+2048 is a sliding puzzle game release in 2014, which was quite popular on mobile devices. This paper discussed the theory and applicability of Minimax, Expectimax, Monte-Carlo Tree Search (MCTS), and reinforcement learning techniques.  While Expectimax shows the best performance with strong domain knowledge, minimax follows with fewer domain knowledge. Currently MCTS and Reinforcement Learning has the worst performance with no domain knowledge provided. but they still have large possibility to improve.
+
+###### Keywords: 2048 Game; Tree Search; Reinforcement Learning.
+
 
 Have Game_Manager, and Logic
 
@@ -13,9 +16,20 @@ what Game_Manager do:
 Logic:
 
     - Four Actions: Up, Down, Left, Right
-    - 
+
+### comparison of different algorithms
+
+Movements for all algorithms
+![img](/blob/master/outputs/images/Movements-for-all-algos.PNG)
 
 
-run this:
+Maxtile Count for All Algorithms
+![img](/blob/master/outputs/images/Maxtile-Count-for-All-Algorithms.PNG)
+
+
+Average and Best Score for All Algorithms
+![img](/blob/master/outputs/images/Average-and-Best-Score-for-All-Algorithms.png)
+
+run by gui:
 
 - python3 -i manager.py
