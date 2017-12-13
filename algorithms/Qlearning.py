@@ -66,11 +66,13 @@ def training(Q):
     #initialize game
     board = make_board(4)
     initial_two(board)
+    score = 0
 
     while not check_end(board):
         actions = []
         next_move = None
         max_Q =  float('-inf')
+        number_of_moves = 0
         old_state = get_state(board)
 
         #get all valid actions for current state
@@ -97,28 +99,80 @@ def training(Q):
         #print('after', board)
         new_state = get_state(board)
         update_Q_value(board, len(actions), next_move, Q, old_state, new_state)
+        number_of_moves += 1
         simple_add_num(board)
 
-    return find_max_cell(board)
+
+def test(Q):
+    # initialize game
+    board = make_board(4)
+    initial_two(board)
+    number_of_moves = 0
+    score = 0
+
+    while not check_end(board):
+        actions = []
+        next_move = None
+        max_Q = float('-inf')
+        old_state = get_state(board)
+
+        # get all valid actions for current state
+        for direction in moves:
+            if can_move(board, direction):
+                actions.append(direction)
+        # find the policy that maximize Q
+        for direction in actions:
+            tmp_board = copy.deepcopy(board)
+            move(tmp_board, direction)
+            add_up(tmp_board, direction, 0)
+            move(tmp_board, direction)
+            new_state = get_state(board)
+            Q_value = get_Q(tmp_board, len(actions), direction, Q, new_state)
+            if Q_value >= max_Q:
+                max_Q = Q_value
+                next_move = direction
+
+        # update Q value
+        # print('before',board)
+        move(board, next_move)
+        number_of_moves += 1
+        add_up(board, next_move, 0)
+        move(board, next_move)
+        # print('after', board)
+        new_state = get_state(board)
+        update_Q_value(board, len(actions), next_move, Q, old_state, new_state)
+        simple_add_num(board)
+
+    for i in range(len(board)):
+        for j in range(len(board)):
+            if board[i][j] != '*':
+                score += board[i][j]
+
+    return find_max_cell(board), number_of_moves, score, tile_count(board)
 
 def run_Qlearning():
     Q = initialization()
-    iteration = 3000
+    iteration = 30
 
     while(iteration > 0):
         training(Q)
         iteration -= 1
 
     #test by using current Q
-    max_cells = training(Q)
-    return max_cells
+    return test(Q)
 
 
 if __name__ == "__main__":
     result = []
-    for i in range(100):
-        value = run_Qlearning()
-        result.append(value)
-        print(value)
+    for i in range(20):
+        stats = {}
+        max_cell, total_moves, score, tiles = run_Qlearning()
+        stats['movements'] = total_moves
+        stats['score'] = score
+        stats['max_tile'] = max_cell
+        stats['depth'] = 0
+        stats['tile_count'] = tiles
+        result.append(stats)
+        print(stats)
 
     print(result)
