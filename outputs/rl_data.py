@@ -1,4 +1,4 @@
-rl_output = [{'max_tile': 128, 'depth': 0, 'score': 334, 'tile_count': {32: 2, 16: 2, 2: 3, 4: 4, 8: 3, 64: 1, 128: 1}, 'movements': 144},
+data = [{'max_tile': 128, 'depth': 0, 'score': 334, 'tile_count': {32: 2, 16: 2, 2: 3, 4: 4, 8: 3, 64: 1, 128: 1}, 'movements': 144},
         {'max_tile': 256, 'depth': 0, 'score': 696, 'tile_count': {16: 3, 128: 2, 2: 2, 4: 3, 32: 1, 8: 3, 64: 1, 256: 1}, 'movements': 309},
         {'max_tile': 64, 'depth': 0, 'score': 244, 'tile_count': {8: 4, 32: 2, 2: 6, 4: 2, 64: 2}, 'movements': 109},
         {'max_tile': 256, 'depth': 0, 'score': 472, 'tile_count': {32: 2, 64: 1, 2: 2, 4: 3, 16: 2, 8: 5, 256: 1}, 'movements': 211},
